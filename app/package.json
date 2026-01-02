@@ -1,0 +1,24 @@
+{
+  "name": "kaizen-app",
+  "version": "1.0.0",
+  "description": "Personal-first continuous improvement app (optional groups) based on kaiZEN philosophy",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "firebase": "^12.6.0",
+    "sharp": "^0.34.5"
+  },
+  "keywords": [
+    "kaizen",
+    "family",
+    "improvement",
+    "habits",
+    "productivity"
+  ],
+  "author": "kaiZEN Project",
+  "license": "MIT"
+}

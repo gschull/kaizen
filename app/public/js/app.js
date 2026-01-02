@@ -1361,23 +1361,74 @@ class KaizenApp {
     
     // Add Goal Form
     const addGoalForm = document.getElementById('addGoalForm');
-    if (addGoalForm) addGoalForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!this.db || !this.helpers) {
-        this.showToast('Still loading… If this persists, refresh and disable blockers.');
-        return;
+    if (addGoalForm) {
+      const readFormValue = (form, key) => {
+        try {
+          if (form && form.elements && form.elements.namedItem) {
+            const el = form.elements.namedItem(key);
+            if (el && typeof el.value === 'string') return el.value;
+          }
+          const byId = document.getElementById(key);
+          if (byId && byId.form === form && typeof byId.value === 'string') return byId.value;
+        } catch (e) {
+          // ignore
+        }
+        return '';
+      };
+
+      let isHandlingAddGoal = false;
+      const handleAddGoal = async () => {
+        if (isHandlingAddGoal) return;
+        isHandlingAddGoal = true;
+
+        const submitBtn = addGoalForm.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+
+        try {
+          if (!this.db || !this.helpers) {
+            this.showToast('Still loading… If this persists, refresh and disable blockers.');
+            return;
+          }
+
+          const title = (readFormValue(addGoalForm, 'goalTitle') || '').trim();
+          if (!title) {
+            this.showToast('Please enter a goal title.');
+            return;
+          }
+
+          const description = readFormValue(addGoalForm, 'goalDescription');
+          const assignee = (readFormValue(addGoalForm, 'goalAssignee') || this.userName || '').trim();
+          const dueDate = readFormValue(addGoalForm, 'goalDueDate');
+          const category = readFormValue(addGoalForm, 'goalCategory');
+
+          await this.addGoal(title, description, assignee, dueDate, category);
+          addGoalForm.reset();
+          this.closeModal('addGoalModal');
+        } catch (err) {
+          console.error('Add goal failed:', err);
+          this.showToast('Could not add goal. Please try again.');
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+          isHandlingAddGoal = false;
+        }
+      };
+
+      addGoalForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (typeof addGoalForm.reportValidity === 'function' && !addGoalForm.reportValidity()) return;
+        handleAddGoal();
+      });
+
+      const addGoalSubmitBtn = addGoalForm.querySelector('button[type="submit"]');
+      if (addGoalSubmitBtn) {
+        addGoalSubmitBtn.addEventListener('click', (e) => {
+          // Some mobile browsers are flaky about submit events inside overlays.
+          e.preventDefault();
+          if (typeof addGoalForm.reportValidity === 'function' && !addGoalForm.reportValidity()) return;
+          handleAddGoal();
+        });
       }
-      const form = e.target;
-      await this.addGoal(
-        form.goalTitle.value,
-        form.goalDescription.value,
-        form.goalAssignee.value || this.userName,
-        form.goalDueDate.value,
-        form.goalCategory.value
-      );
-      form.reset();
-      this.closeModal('addGoalModal');
-    });
+    }
     
     // Add Habit Form
     const addHabitForm = document.getElementById('addHabitForm');

@@ -1059,10 +1059,48 @@
         });
 
       // Submit fallbacks: prevent reload if module JS isn't running.
+      function fallbackToast(message) {
+        try {
+          var existing = document.querySelector('.toast');
+          if (existing) existing.remove();
+          var toast = document.createElement('div');
+          toast.className = 'toast show';
+          toast.textContent = message;
+          document.body.appendChild(toast);
+          setTimeout(function () {
+            toast.classList.remove('show');
+            setTimeout(function () {
+              if (toast && toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 300);
+          }, 3500);
+        } catch (e) {
+          // ignore
+        }
+      }
+
       function wireFallbackSubmit(formId, handler) {
         var form = document.getElementById(formId);
         if (!form || form.getAttribute('data-fallback-submit') === '1') return;
         form.setAttribute('data-fallback-submit', '1');
+
+        // Some browsers/PWA shells are flaky about submit events from modal buttons.
+        var submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn && submitBtn.getAttribute('data-fallback-click') !== '1') {
+          submitBtn.setAttribute('data-fallback-click', '1');
+          submitBtn.addEventListener('click', function (e) {
+            // Let the browser show validation UI if invalid.
+            if (typeof form.reportValidity === 'function' && !form.reportValidity()) return;
+            e.preventDefault();
+            // Ensure our submit handler runs.
+            try {
+              var ev = document.createEvent('Event');
+              ev.initEvent('submit', true, true);
+              form.dispatchEvent(ev);
+            } catch (err) {
+              // ignore
+            }
+          });
+        }
 
         form.addEventListener('submit', function (e) {
           // If the real app is running, its handler will intercept.
@@ -1072,20 +1110,20 @@
           try {
             handler(form);
           } catch (err) {
-            alert('Still loading… Please refresh and disable blockers.');
+            fallbackToast('Still loading… Please refresh and disable blockers.');
           }
         });
       }
 
       wireFallbackSubmit('addGoalForm', function (form) {
         if (!window.kaizen || !window.kaizen.addGoal) {
-          alert('Still loading… Please wait a moment, then try again.');
+          fallbackToast('Still loading… Please wait a moment, then try again.');
           return;
         }
 
         // If Firebase isn't ready yet, do not lose the form to a reload.
         if (!window.kaizen.helpers || !window.kaizen.db) {
-          alert('Still loading… If this persists, refresh and disable blockers.');
+          fallbackToast('Still loading… If this persists, refresh and disable blockers.');
           return;
         }
 
@@ -1103,7 +1141,7 @@
 
       wireFallbackSubmit('addHabitForm', function (form) {
         if (!window.kaizen || !window.kaizen.addHabit || !window.kaizen.helpers || !window.kaizen.db) {
-          alert('Still loading… If this persists, refresh and disable blockers.');
+          fallbackToast('Still loading… If this persists, refresh and disable blockers.');
           return;
         }
         window.kaizen.addHabit(
@@ -1119,7 +1157,7 @@
 
       wireFallbackSubmit('addWinForm', function (form) {
         if (!window.kaizen || !window.kaizen.addWin || !window.kaizen.helpers || !window.kaizen.db) {
-          alert('Still loading… If this persists, refresh and disable blockers.');
+          fallbackToast('Still loading… If this persists, refresh and disable blockers.');
           return;
         }
         window.kaizen.addWin(form.winDescription && form.winDescription.value).then(function () {
@@ -1130,7 +1168,7 @@
 
       wireFallbackSubmit('addReflectionForm', function (form) {
         if (!window.kaizen || !window.kaizen.addReflection || !window.kaizen.helpers || !window.kaizen.db) {
-          alert('Still loading… If this persists, refresh and disable blockers.');
+          fallbackToast('Still loading… If this persists, refresh and disable blockers.');
           return;
         }
         window.kaizen.addReflection(

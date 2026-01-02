@@ -266,9 +266,12 @@ class KaizenApp {
     this.showSetupModal();
 
     if (this.userName) {
-      document.getElementById('personalName')?.value = this.userName;
-      document.getElementById('joinName')?.value = this.userName;
-      document.getElementById('createName')?.value = this.userName;
+      const personalNameEl = document.getElementById('personalName');
+      if (personalNameEl) personalNameEl.value = this.userName;
+      const joinNameEl = document.getElementById('joinName');
+      if (joinNameEl) joinNameEl.value = this.userName;
+      const createNameEl = document.getElementById('createName');
+      if (createNameEl) createNameEl.value = this.userName;
     }
   }
 
@@ -671,7 +674,9 @@ class KaizenApp {
     
     if (completed) {
       this.showToast('Goal completed! 🎉');
-      this.addWin(`Completed goal: ${this.data.goals.find(g => g.id === goalId)?.title}`, 'goal');
+      const goal = (this.data.goals || []).find(g => g.id === goalId);
+      const goalTitle = goal ? goal.title : '';
+      this.addWin(`Completed goal: ${goalTitle}`, 'goal');
     }
   }
 
@@ -684,8 +689,8 @@ class KaizenApp {
 
   renderGoals() {
     // Separate goals by type (group vs personal)
-    const groupGoals = this.data.goals.filter(g => !g.completed && g.assignee?.toLowerCase() === 'group');
-    const personalGoals = this.data.goals.filter(g => !g.completed && g.assignee?.toLowerCase() !== 'group');
+    const groupGoals = this.data.goals.filter(g => !g.completed && (g.assignee || '').toLowerCase() === 'group');
+    const personalGoals = this.data.goals.filter(g => !g.completed && (g.assignee || '').toLowerCase() !== 'group');
     
     // Render group goals
     const groupContainer = document.getElementById('groupGoals');
@@ -1116,7 +1121,7 @@ class KaizenApp {
     const today = new Date().toISOString().split('T')[0];
     const focusInput = document.getElementById('dailyFocus');
     const focusDisplay = document.getElementById('focusDisplay');
-    const focusText = focusDisplay?.querySelector('.focus-text');
+    const focusText = focusDisplay ? focusDisplay.querySelector('.focus-text') : null;
     const inputContainer = document.querySelector('.focus-input-container');
     
     try {
@@ -1135,7 +1140,8 @@ class KaizenApp {
     }
     
     // Edit focus button
-    document.getElementById('editFocus')?.addEventListener('click', () => {
+    const editFocusBtn = document.getElementById('editFocus');
+    if (editFocusBtn) editFocusBtn.addEventListener('click', () => {
       const focusDisplay = document.getElementById('focusDisplay');
       const inputContainer = document.querySelector('.focus-input-container');
       if (focusDisplay) focusDisplay.classList.add('hidden');
@@ -1267,7 +1273,8 @@ class KaizenApp {
       const pageKey = allowedPages.has(targetPage) ? targetPage : 'dashboard';
 
       navLinks.forEach(l => l.classList.remove('active'));
-      document.querySelector(`.nav-link[data-page="${pageKey}"]`)?.classList.add('active');
+      const activeLink = document.querySelector(`.nav-link[data-page="${pageKey}"]`);
+      if (activeLink) activeLink.classList.add('active');
 
       pages.forEach(p => {
         p.classList.toggle('active', p.id === `page-${pageKey}`);
@@ -1279,7 +1286,7 @@ class KaizenApp {
         this.renderJournal();
       }
 
-      navMenu?.classList.remove('active');
+      if (navMenu) navMenu.classList.remove('active');
     };
 
     const routeFromHash = () => {
@@ -1299,9 +1306,11 @@ class KaizenApp {
       });
     });
     
-    navToggle?.addEventListener('click', () => {
-      navMenu?.classList.toggle('active');
-    });
+    if (navToggle) {
+      navToggle.addEventListener('click', () => {
+        if (navMenu) navMenu.classList.toggle('active');
+      });
+    }
 
     window.addEventListener('hashchange', routeFromHash);
     routeFromHash();
@@ -1309,11 +1318,14 @@ class KaizenApp {
 
   setupEventListeners() {
     // Add Goal buttons
-    document.getElementById('addGroupGoal')?.addEventListener('click', () => this.openGoalModal('group'));
-    document.getElementById('addPersonalGoal')?.addEventListener('click', () => this.openGoalModal('personal'));
+    const addGroupGoalBtn = document.getElementById('addGroupGoal');
+    if (addGroupGoalBtn) addGroupGoalBtn.addEventListener('click', () => this.openGoalModal('group'));
+    const addPersonalGoalBtn = document.getElementById('addPersonalGoal');
+    if (addPersonalGoalBtn) addPersonalGoalBtn.addEventListener('click', () => this.openGoalModal('personal'));
     
     // Add Habit button
-    document.getElementById('addHabit')?.addEventListener('click', () => this.openModal('addHabitModal'));
+    const addHabitBtn = document.getElementById('addHabit');
+    if (addHabitBtn) addHabitBtn.addEventListener('click', () => this.openModal('addHabitModal'));
     
     // Quick Actions
     document.querySelectorAll('[data-action]').forEach(btn => {
@@ -1327,7 +1339,8 @@ class KaizenApp {
             this.openModal('addReflectionModal');
             break;
           case 'viewHabits':
-            document.querySelector('[data-page="habits"]')?.click();
+            const habitsLink = document.querySelector('[data-page="habits"]');
+            if (habitsLink) habitsLink.click();
             break;
           case 'groupMeeting':
             this.openModal('meetingTimerOverlay');
@@ -1337,15 +1350,18 @@ class KaizenApp {
     });
     
     // Start Meeting button
-    document.getElementById('startMeeting')?.addEventListener('click', () => this.openModal('meetingTimerOverlay'));
+    const startMeetingBtn = document.getElementById('startMeeting');
+    if (startMeetingBtn) startMeetingBtn.addEventListener('click', () => this.openModal('meetingTimerOverlay'));
 
     // Group page quick actions
-    document.getElementById('openJoinGroup')?.addEventListener('click', () => this.openSetupTab('join'));
-    document.getElementById('openCreateGroup')?.addEventListener('click', () => this.openSetupTab('create'));
+    const openJoinGroupBtn = document.getElementById('openJoinGroup');
+    if (openJoinGroupBtn) openJoinGroupBtn.addEventListener('click', () => this.openSetupTab('join'));
+    const openCreateGroupBtn = document.getElementById('openCreateGroup');
+    if (openCreateGroupBtn) openCreateGroupBtn.addEventListener('click', () => this.openSetupTab('create'));
     
     // Add Goal Form
     const addGoalForm = document.getElementById('addGoalForm');
-    addGoalForm?.addEventListener('submit', async (e) => {
+    if (addGoalForm) addGoalForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!this.db || !this.helpers) {
         this.showToast('Still loading… If this persists, refresh and disable blockers.');
@@ -1365,18 +1381,19 @@ class KaizenApp {
     
     // Add Habit Form
     const addHabitForm = document.getElementById('addHabitForm');
-    addHabitForm?.addEventListener('submit', async (e) => {
+    if (addHabitForm) addHabitForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!this.db || !this.helpers) {
         this.showToast('Still loading… If this persists, refresh and disable blockers.');
         return;
       }
       const form = e.target;
+      const reminder = form.habitReminder ? form.habitReminder.value : undefined;
       await this.addHabit(
         form.habitName.value,
         form.habitFrequency.value,
         form.habitAssignee.value || this.userName,
-        form.habitReminder?.value
+        reminder
       );
       form.reset();
       this.closeModal('addHabitModal');
@@ -1384,7 +1401,7 @@ class KaizenApp {
     
     // Add Win Form
     const addWinForm = document.getElementById('addWinForm');
-    addWinForm?.addEventListener('submit', async (e) => {
+    if (addWinForm) addWinForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!this.db || !this.helpers) {
         this.showToast('Still loading… If this persists, refresh and disable blockers.');
@@ -1399,7 +1416,7 @@ class KaizenApp {
     
     // Add Reflection Form
     const addReflectionForm = document.getElementById('addReflectionForm');
-    addReflectionForm?.addEventListener('submit', async (e) => {
+    if (addReflectionForm) addReflectionForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!this.db || !this.helpers) {
         this.showToast('Still loading… If this persists, refresh and disable blockers.');
@@ -1413,18 +1430,22 @@ class KaizenApp {
     
     // Journal page reflection form
     const reflectionForm = document.getElementById('reflectionForm');
-    reflectionForm?.addEventListener('submit', async (e) => {
+    if (reflectionForm) reflectionForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!this.db || !this.helpers) {
         this.showToast('Still loading… If this persists, refresh and disable blockers.');
         return;
       }
       const form = e.target;
+      const winVal = form.reflectionWin ? form.reflectionWin.value : '';
+      const learnedVal = form.reflectionLearn ? form.reflectionLearn.value : '';
+      const improveVal = form.reflectionImprove ? form.reflectionImprove.value : '';
+      const gratitudeVal = form.reflectionGratitude ? form.reflectionGratitude.value : '';
       const content = [
-        form.reflectionWin?.value ? `🌟 Win: ${form.reflectionWin.value}` : '',
-        form.reflectionLearn?.value ? `📚 Learned: ${form.reflectionLearn.value}` : '',
-        form.reflectionImprove?.value ? `🎯 Improve: ${form.reflectionImprove.value}` : '',
-        form.reflectionGratitude?.value ? `💝 Grateful: ${form.reflectionGratitude.value}` : ''
+        winVal ? `🌟 Win: ${winVal}` : '',
+        learnedVal ? `📚 Learned: ${learnedVal}` : '',
+        improveVal ? `🎯 Improve: ${improveVal}` : '',
+        gratitudeVal ? `💝 Grateful: ${gratitudeVal}` : ''
       ].filter(Boolean).join('\n');
       
       if (content) {
@@ -1437,8 +1458,8 @@ class KaizenApp {
     // Daily Focus
     const saveFocusBtn = document.getElementById('saveFocus');
     const dailyFocusInput = document.getElementById('dailyFocus');
-    saveFocusBtn?.addEventListener('click', async () => {
-      const focus = dailyFocusInput?.value?.trim();
+    if (saveFocusBtn) saveFocusBtn.addEventListener('click', async () => {
+      const focus = (dailyFocusInput && dailyFocusInput.value) ? dailyFocusInput.value.trim() : '';
       if (focus) {
         await this.saveDailyFocus(focus);
         this.showToast('Focus set! 🎯');
@@ -1464,13 +1485,14 @@ class KaizenApp {
     });
     
     // Close meeting timer
-    document.getElementById('closeMeetingTimer')?.addEventListener('click', () => {
+    const closeMeetingTimerBtn = document.getElementById('closeMeetingTimer');
+    if (closeMeetingTimerBtn) closeMeetingTimerBtn.addEventListener('click', () => {
       this.closeModal('meetingTimerOverlay');
     });
     
     // Copy group code
     const copyCodeBtn = document.getElementById('copyGroupCode');
-    copyCodeBtn?.addEventListener('click', () => {
+    if (copyCodeBtn) copyCodeBtn.addEventListener('click', () => {
       if (this.scope !== 'group' || !this.groupCode) {
         this.showToast('No group code yet. Join or create a group first.');
         return;
@@ -1481,7 +1503,7 @@ class KaizenApp {
     
     // Leave group (returns to personal mode)
     const leaveGroupBtn = document.getElementById('leaveGroup');
-    leaveGroupBtn?.addEventListener('click', () => {
+    if (leaveGroupBtn) leaveGroupBtn.addEventListener('click', () => {
       const message = (this.scope === 'group' && this.groupCode)
         ? 'Leave this group? Your personal data will remain on this device.'
         : 'Switch to personal mode? (This clears any saved group code on this device.)';
@@ -1544,12 +1566,12 @@ class KaizenApp {
 
   openModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal?.classList.add('active');
+    if (modal) modal.classList.add('active');
   }
 
   closeModal(modalId) {
     const modal = document.getElementById(modalId);
-    modal?.classList.remove('active');
+    if (modal) modal.classList.remove('active');
   }
 
   showToast(message) {
@@ -1589,9 +1611,9 @@ class KaizenApp {
     const timerPrev = document.getElementById('timerPrev');
     const timerNext = document.getElementById('timerNext');
     
-    timerToggle?.addEventListener('click', () => this.toggleTimer());
-    timerPrev?.addEventListener('click', () => this.prevPhase());
-    timerNext?.addEventListener('click', () => this.nextPhase());
+    if (timerToggle) timerToggle.addEventListener('click', () => this.toggleTimer());
+    if (timerPrev) timerPrev.addEventListener('click', () => this.prevPhase());
+    if (timerNext) timerNext.addEventListener('click', () => this.nextPhase());
     
     this.updateTimerDisplay();
   }
@@ -1674,7 +1696,7 @@ class KaizenApp {
     
     // Set up notification toggle button
     const notifToggle = document.getElementById('notificationToggle');
-    notifToggle?.addEventListener('click', () => this.toggleNotifications());
+    if (notifToggle) notifToggle.addEventListener('click', () => this.toggleNotifications());
     
     // Set up reminder time input
     const reminderTimeInput = document.getElementById('reminderTime');
@@ -1682,8 +1704,8 @@ class KaizenApp {
     if (reminderTimeInput) reminderTimeInput.value = savedTime;
     
     const saveReminderBtn = document.getElementById('saveReminderTime');
-    saveReminderBtn?.addEventListener('click', () => {
-      const newTime = reminderTimeInput?.value || '19:00';
+    if (saveReminderBtn) saveReminderBtn.addEventListener('click', () => {
+      const newTime = (reminderTimeInput && reminderTimeInput.value) ? reminderTimeInput.value : '19:00';
       localStorage.setItem('kaizen_reminder_time', newTime);
       this.scheduleNextReminder();
       this.showToast(`Reminder set for ${newTime}! ⏰`);

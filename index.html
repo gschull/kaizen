@@ -37,6 +37,7 @@
         <a href="#group" class="nav-link" data-page="group">Group</a>
         <a href="#learn" class="nav-link" data-page="learn">Learn</a>
         <a href="#donate" class="nav-link" data-page="donate">Donate</a>
+        <a href="#settings" class="nav-link" data-page="settings">⚙️ Settings</a>
         <button class="btn btn-small btn-outline hidden" id="installAppBtn" type="button">Install App</button>
       </div>
     </nav>
@@ -635,6 +636,33 @@
           </div>
         </div>
       </section>
+
+      <!-- Settings Page -->
+      <section class="page" id="page-settings">
+        <div class="container">
+          <header class="page-header">
+            <h1>⚙️ Settings</h1>
+            <p class="subtitle">Choose how kaiZEN should display on this device.</p>
+          </header>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Display</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="displayModeSelect">Layout mode</label>
+                <select id="displayModeSelect" class="form-input">
+                  <option value="auto">Auto (recommended)</option>
+                  <option value="mobile">Mobile</option>
+                  <option value="desktop">Fullscreen / Desktop</option>
+                </select>
+                <small>This affects layout only (not zoom). Try Desktop if your phone shows the “big” layout.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- Add Goal Modal -->
@@ -977,6 +1005,27 @@
       if (installBtn && isLikelyMobileDevice() && !isStandaloneMode()) {
         showInstallButton();
       }
+
+      // Display mode override (Settings)
+      try {
+        var savedDisplayMode = (localStorage.getItem('kaizen_display_mode') || 'auto').toLowerCase();
+        document.body.classList.remove('display-mobile', 'display-desktop');
+        if (savedDisplayMode === 'mobile') document.body.classList.add('display-mobile');
+        if (savedDisplayMode === 'desktop') document.body.classList.add('display-desktop');
+
+        var displayModeSelect = document.getElementById('displayModeSelect');
+        if (displayModeSelect) {
+          displayModeSelect.value = (savedDisplayMode === 'mobile' || savedDisplayMode === 'desktop') ? savedDisplayMode : 'auto';
+          displayModeSelect.addEventListener('change', function () {
+            var nextMode = (displayModeSelect.value || 'auto').toLowerCase();
+            if (nextMode !== 'mobile' && nextMode !== 'desktop') nextMode = 'auto';
+            localStorage.setItem('kaizen_display_mode', nextMode);
+            document.body.classList.remove('display-mobile', 'display-desktop');
+            if (nextMode === 'mobile') document.body.classList.add('display-mobile');
+            if (nextMode === 'desktop') document.body.classList.add('display-desktop');
+          });
+        }
+      } catch (e) {}
 
       // Mobile hamburger fallback (only if main JS didn't wire navigation)
       if (!window.__KAIZEN_NAV_WIRED__) {

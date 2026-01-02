@@ -2041,3 +2041,79 @@ select.form-input {
     max-width: none;
   }
 }
+
+/* Display Mode Overrides (Settings)
+   - .display-mobile forces mobile layout even on wide screens
+   - .display-desktop forces desktop layout even on narrow screens
+*/
+
+.display-mobile .nav-menu {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  flex-direction: column;
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-base);
+}
+
+.display-mobile .nav-menu.active {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.display-mobile .nav-toggle {
+  display: flex;
+}
+
+.display-mobile .stats-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.display-mobile .quick-actions {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.display-mobile .focus-input-container {
+  flex-direction: column;
+}
+
+.display-mobile .principles-grid {
+  grid-template-columns: 1fr;
+}
+
+.display-desktop .nav-menu {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  background: transparent;
+  flex-direction: row;
+  padding: 0;
+  box-shadow: none;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+}
+
+.display-desktop .nav-toggle {
+  display: none !important;
+}
+
+.display-desktop .stats-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.display-desktop .quick-actions {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.display-desktop .focus-input-container {
+  flex-direction: row;
+}

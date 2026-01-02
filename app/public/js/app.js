@@ -18,6 +18,8 @@ class KaizenApp {
     };
 
     this._firebaseBootstrapped = false;
+
+    this.displayMode = 'auto'; // 'auto' | 'mobile' | 'desktop'
     
     this.init();
   }
@@ -30,6 +32,9 @@ class KaizenApp {
     this.userName = localStorage.getItem('kaizen_user_name');
     this.groupCode = this.normalizeStoredGroupCode(localStorage.getItem('kaizen_group_code'));
     this.groupRoot = localStorage.getItem('kaizen_group_root');
+
+    this.displayMode = (localStorage.getItem('kaizen_display_mode') || 'auto').toLowerCase();
+    this.applyDisplayMode(this.displayMode);
 
     this.userKey = this.userName ? this.normalizeKey(this.userName) : null;
 
@@ -55,6 +60,21 @@ class KaizenApp {
     // Enable realtime features as soon as Firebase becomes available.
     // We don't await this to avoid blocking UI wiring.
     this.bootstrapFirebaseWhenReady();
+  }
+
+  applyDisplayMode(mode) {
+    const body = document.body;
+    if (!body) return;
+    body.classList.remove('display-mobile', 'display-desktop');
+    if (mode === 'mobile') body.classList.add('display-mobile');
+    if (mode === 'desktop') body.classList.add('display-desktop');
+  }
+
+  setDisplayMode(mode) {
+    const next = (mode || 'auto').toLowerCase();
+    this.displayMode = (next === 'mobile' || next === 'desktop') ? next : 'auto';
+    localStorage.setItem('kaizen_display_mode', this.displayMode);
+    this.applyDisplayMode(this.displayMode);
   }
 
   bootstrapFirebaseWhenReady() {
@@ -1283,7 +1303,7 @@ class KaizenApp {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
 
-    const allowedPages = new Set(['dashboard', 'goals', 'habits', 'journal', 'group', 'learn', 'donate']);
+    const allowedPages = new Set(['dashboard', 'goals', 'habits', 'journal', 'group', 'learn', 'donate', 'settings']);
 
     const showPage = (targetPage) => {
       const pageKey = allowedPages.has(targetPage) ? targetPage : 'dashboard';
@@ -1336,6 +1356,15 @@ class KaizenApp {
   }
 
   setupEventListeners() {
+    // Settings
+    const displayModeSelect = document.getElementById('displayModeSelect');
+    if (displayModeSelect) {
+      displayModeSelect.value = (this.displayMode === 'mobile' || this.displayMode === 'desktop') ? this.displayMode : 'auto';
+      displayModeSelect.addEventListener('change', () => {
+        this.setDisplayMode(displayModeSelect.value);
+      });
+    }
+
     // Add Goal buttons
     const addGroupGoalBtn = document.getElementById('addGroupGoal');
     if (addGroupGoalBtn) addGroupGoalBtn.addEventListener('click', () => this.openGoalModal('group'));

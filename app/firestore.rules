@@ -1,4 +1,4 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -14,7 +14,7 @@ service cloud.firestore {
       // update your rules.
       // NOTE: This project currently has no authentication; rules are open for now.
       // Tighten these rules before wider sharing.
-      allow read, write: if request.time < timestamp.date(2026, 12, 31);
+      allow read, write: if true;
     }
   }
 }

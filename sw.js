@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kaizen-v3';
+const CACHE_NAME = 'kaizen-v4';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -21,30 +21,41 @@ self.addEventListener('install', (event) => {
 
 // Fetch event
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch new
-        if (response) {
-          return response;
-        }
-        return fetch(event.request)
-          .then((response) => {
-            // Don't cache non-successful responses
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            
-            // Clone the response
-            const responseToCache = response.clone();
-            
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-            
-            return response;
+  const request = event.request;
+
+  // Always try network first for navigations / HTML so UI updates aren't stuck behind cache.
+  const accept = request.headers.get('accept') || '';
+  const isHTML = request.mode === 'navigate' || accept.includes('text/html');
+  if (isHTML) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put('/index.html', responseToCache);
           });
+          return response;
+        })
+        .catch(() => caches.match('/index.html'))
+    );
+    return;
+  }
+
+  // Cache-first for other requests (CSS/JS/etc)
+  event.respondWith(
+    caches.match(request)
+      .then((response) => {
+        if (response) return response;
+        return fetch(request).then((networkResponse) => {
+          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            return networkResponse;
+          }
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          });
+          return networkResponse;
+        });
       })
   );
 });

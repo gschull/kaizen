@@ -1,0 +1,10 @@
+{
+  "name": "kaizen",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node app/server.js",
+    "start": "node app/server.js",
+    "test": "node -e \"console.log('No tests configured');\""
+  }
+}

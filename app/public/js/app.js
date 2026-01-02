@@ -163,7 +163,7 @@ class KaizenApp {
           <div class="setup-panel active" id="personalPanel">
             <div class="form-group">
               <label for="personalName">Your Name</label>
-              <input type="text" id="personalName" placeholder="What should we call you?" class="form-input">
+              <input type="text" id="personalName" placeholder="What should I call you?" class="form-input">
             </div>
             <button class="btn btn-primary btn-block" id="startPersonalBtn">Continue</button>
           </div>
@@ -176,7 +176,7 @@ class KaizenApp {
             </div>
             <div class="form-group">
               <label for="joinName">Your Name</label>
-              <input type="text" id="joinName" placeholder="What should we call you?" class="form-input">
+              <input type="text" id="joinName" placeholder="What should I call you?" class="form-input">
             </div>
             <button class="btn btn-primary btn-block" id="joinGroupBtn">Join Group</button>
           </div>
@@ -188,7 +188,7 @@ class KaizenApp {
             </div>
             <div class="form-group">
               <label for="createName">Your Name</label>
-              <input type="text" id="createName" placeholder="What should we call you?" class="form-input">
+              <input type="text" id="createName" placeholder="What should I call you?" class="form-input">
             </div>
             <button class="btn btn-primary btn-block" id="createGroupBtn">Create Group</button>
           </div>
@@ -1098,7 +1098,7 @@ class KaizenApp {
       { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" },
       { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
       { text: "If you want to change the world, start with yourself.", author: "Mahatma Gandhi" },
-      { text: "We are what we repeatedly do. Excellence is not an act, but a habit.", author: "Aristotle" },
+      { text: "Excellence is not an act, but a habit.", author: "Aristotle" },
       { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
       { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
       { text: "Strive for progress, not perfection.", author: "Unknown" },

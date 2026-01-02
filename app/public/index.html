@@ -36,6 +36,7 @@
         <a href="#journal" class="nav-link" data-page="journal">Journal</a>
         <a href="#group" class="nav-link" data-page="group">Group</a>
         <a href="#learn" class="nav-link" data-page="learn">Learn</a>
+        <a href="#donate" class="nav-link" data-page="donate">Donate</a>
         <button class="btn btn-small btn-outline hidden" id="installAppBtn" type="button">Install App</button>
       </div>
     </nav>
@@ -586,6 +587,52 @@
           </div>
         </div>
       </section>
+
+      <!-- Donate Page -->
+      <section class="page" id="page-donate">
+        <div class="container">
+          <header class="page-header">
+            <h1>❤️ Support kaiZEN</h1>
+            <p class="subtitle">If this app helps you, a small donation keeps it improving.</p>
+          </header>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Donation Links</h2>
+            </div>
+            <div class="card-body">
+              <p class="note">Replace these placeholder links with your real URLs.</p>
+              <div class="quick-actions">
+                <a class="action-btn" href="https://www.buymeacoffee.com/" target="_blank" rel="noopener noreferrer">
+                  <span class="action-icon">☕</span>
+                  <span class="action-text">Buy Me a Coffee</span>
+                </a>
+                <a class="action-btn" href="https://ko-fi.com/" target="_blank" rel="noopener noreferrer">
+                  <span class="action-icon">🫶</span>
+                  <span class="action-text">Ko-fi</span>
+                </a>
+                <a class="action-btn" href="https://www.paypal.com/paypalme/" target="_blank" rel="noopener noreferrer">
+                  <span class="action-icon">💳</span>
+                  <span class="action-text">PayPal.me</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Other Options</h2>
+            </div>
+            <div class="card-body">
+              <ul>
+                <li><strong>GitHub Sponsors</strong> (great if you want recurring support)</li>
+                <li><strong>Stripe payment link</strong> (one-time donations, credit cards)</li>
+                <li><strong>Venmo / Cash App</strong> (popular in the US)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- Add Goal Modal -->
@@ -791,7 +838,7 @@
   <script>
     (function () {
       function showPage(pageKey) {
-        var allowed = { dashboard: true, goals: true, habits: true, journal: true, group: true, learn: true };
+        var allowed = { dashboard: true, goals: true, habits: true, journal: true, group: true, learn: true, donate: true };
         var key = allowed[pageKey] ? pageKey : 'dashboard';
 
         var pages = document.querySelectorAll('.page');

@@ -1213,7 +1213,7 @@ class KaizenApp {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
 
-    const allowedPages = new Set(['dashboard', 'goals', 'habits', 'journal', 'group', 'learn']);
+    const allowedPages = new Set(['dashboard', 'goals', 'habits', 'journal', 'group', 'learn', 'donate']);
 
     const showPage = (targetPage) => {
       const pageKey = allowedPages.has(targetPage) ? targetPage : 'dashboard';

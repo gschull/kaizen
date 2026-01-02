@@ -16,6 +16,8 @@ class KaizenApp {
       reflections: [],
       groupMembers: []
     };
+
+    this._firebaseBootstrapped = false;
     
     this.init();
   }
@@ -50,14 +52,20 @@ class KaizenApp {
     this.setupMeetingTimer();
     this.setupNotifications();
 
-    // Wait for Firebase (with a timeout) and then enable realtime features.
-    const firebaseReady = await this.waitForFirebase(8000);
-    if (!firebaseReady) {
-      // UI still works; data actions will show a friendly message.
-      return;
-    }
+    // Enable realtime features as soon as Firebase becomes available.
+    // We don't await this to avoid blocking UI wiring.
+    this.bootstrapFirebaseWhenReady();
+  }
 
-    if (this.userName) {
+  bootstrapFirebaseWhenReady() {
+    if (this._firebaseBootstrapped) return;
+    this._firebaseBootstrapped = true;
+
+    // Wait forever in the background; this resolves only once Firebase globals exist.
+    this.waitForFirebase(0).then(async (ready) => {
+      if (!ready) return;
+      if (!this.userName) return;
+
       if (this.groupCode) {
         this.scope = 'group';
         if (!this.groupRoot) {
@@ -68,7 +76,7 @@ class KaizenApp {
       }
 
       this.setupRealtimeListeners();
-    }
+    });
   }
 
   normalizeStoredGroupCode(raw) {
@@ -632,6 +640,25 @@ class KaizenApp {
         createdAt: new Date().toISOString()
       }
     );
+
+    // Update UI immediately; realtime listeners will reconcile state.
+    const newGoal = {
+      id: goalId,
+      title,
+      description,
+      assignee,
+      dueDate,
+      category,
+      progress: 0,
+      completed: false,
+      createdBy: this.userName,
+      createdAt: new Date().toISOString()
+    };
+    this.data.goals = (this.data.goals || []).filter(g => g.id !== goalId);
+    this.data.goals.unshift(newGoal);
+    this.renderGoals();
+    this.renderDashboard();
+
     this.showToast('Goal added! 🎯');
   }
 

@@ -192,7 +192,7 @@ class KaizenApp {
           
           <div class="setup-panel" id="createPanel">
             <div class="form-group">
-              <label for="groupName">Group Name (optional)</label>
+              <label for="groupName">Group Name</label>
               <input type="text" id="groupName" placeholder="e.g., Friends, Team, Study Group" class="form-input">
             </div>
             <div class="form-group">

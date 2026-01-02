@@ -1,6 +1,6 @@
 # kaiZEN Web App
 
-A Progressive Web App (PWA) for personal continuous improvement, with optional group collaboration.
+A Progressive Web App (PWA) for personal continuous improvement, with group collaboration.
 
 ## Features
 
@@ -9,7 +9,7 @@ A Progressive Web App (PWA) for personal continuous improvement, with optional g
 - ✅ **Habit Tracking** - Build positive habits with streaks
 - 📔 **Reflection Journal** - Daily prompts for growth
 - 🎯 **Goal Setting** - Personal and group goals with progress tracking
-- 👥 **Groups (Optional)** - Join/create a group to share goals and wins
+- 👥 **Groups** - Join/create a group to share goals and wins
 - ⏱️ **Weekly Review Timer** - Guided 15-minute weekly review
 - 📚 **Learn** - Kaizen principles and tips built-in
 
@@ -32,7 +32,7 @@ npm start
 
 Visit [http://localhost:3000](http://localhost:3000)
 
-### 4. Install as App (Optional)
+### 4. Install as App
 
 - **Chrome/Edge**: Click the install icon in the address bar
 - **iOS Safari**: Tap Share → "Add to Home Screen"

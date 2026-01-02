@@ -47,7 +47,7 @@ Common issues you’ll hit when practicing kaiZEN (solo or with a group), plus s
 
 ---
 
-## Groups (optional)
+## Groups
 
 ### “People aren’t participating equally”
 

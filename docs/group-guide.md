@@ -3,7 +3,7 @@
 kaiZEN is **personal-first**.
 
 - **Personal mode:** your data is stored under your user key.
-- **Group mode (optional):** join or create a group to share **group goals**, **wins**, and **members**.
+- **Group mode:** join or create a group to share **group goals**, **wins**, and **members**.
 
 ## Core concepts
 

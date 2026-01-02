@@ -26,3 +26,4 @@ build/
 
 # Editor
 .vscode/
+.vercel

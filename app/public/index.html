@@ -1058,6 +1058,90 @@
           });
         });
 
+      // Submit fallbacks: prevent reload if module JS isn't running.
+      function wireFallbackSubmit(formId, handler) {
+        var form = document.getElementById(formId);
+        if (!form || form.getAttribute('data-fallback-submit') === '1') return;
+        form.setAttribute('data-fallback-submit', '1');
+
+        form.addEventListener('submit', function (e) {
+          // If the real app is running, its handler will intercept.
+          if (window.kaizen && window.kaizen.helpers && window.kaizen.db) return;
+
+          e.preventDefault();
+          try {
+            handler(form);
+          } catch (err) {
+            alert('Still loading… Please refresh and disable blockers.');
+          }
+        });
+      }
+
+      wireFallbackSubmit('addGoalForm', function (form) {
+        if (!window.kaizen || !window.kaizen.addGoal) {
+          alert('Still loading… Please wait a moment, then try again.');
+          return;
+        }
+
+        // If Firebase isn't ready yet, do not lose the form to a reload.
+        if (!window.kaizen.helpers || !window.kaizen.db) {
+          alert('Still loading… If this persists, refresh and disable blockers.');
+          return;
+        }
+
+        window.kaizen.addGoal(
+          form.goalTitle && form.goalTitle.value,
+          form.goalDescription && form.goalDescription.value,
+          (form.goalAssignee && form.goalAssignee.value) || (window.kaizen.userName || ''),
+          form.goalDueDate && form.goalDueDate.value,
+          form.goalCategory && form.goalCategory.value
+        ).then(function () {
+          form.reset();
+          closeOverlay(document.getElementById('addGoalModal'));
+        });
+      });
+
+      wireFallbackSubmit('addHabitForm', function (form) {
+        if (!window.kaizen || !window.kaizen.addHabit || !window.kaizen.helpers || !window.kaizen.db) {
+          alert('Still loading… If this persists, refresh and disable blockers.');
+          return;
+        }
+        window.kaizen.addHabit(
+          form.habitName && form.habitName.value,
+          form.habitFrequency && form.habitFrequency.value,
+          (form.habitAssignee && form.habitAssignee.value) || (window.kaizen.userName || ''),
+          form.habitReminder && form.habitReminder.value
+        ).then(function () {
+          form.reset();
+          closeOverlay(document.getElementById('addHabitModal'));
+        });
+      });
+
+      wireFallbackSubmit('addWinForm', function (form) {
+        if (!window.kaizen || !window.kaizen.addWin || !window.kaizen.helpers || !window.kaizen.db) {
+          alert('Still loading… If this persists, refresh and disable blockers.');
+          return;
+        }
+        window.kaizen.addWin(form.winDescription && form.winDescription.value).then(function () {
+          form.reset();
+          closeOverlay(document.getElementById('addWinModal'));
+        });
+      });
+
+      wireFallbackSubmit('addReflectionForm', function (form) {
+        if (!window.kaizen || !window.kaizen.addReflection || !window.kaizen.helpers || !window.kaizen.db) {
+          alert('Still loading… If this persists, refresh and disable blockers.');
+          return;
+        }
+        window.kaizen.addReflection(
+          form.reflectionContent && form.reflectionContent.value,
+          form.reflectionMood && form.reflectionMood.value
+        ).then(function () {
+          form.reset();
+          closeOverlay(document.getElementById('addReflectionModal'));
+        });
+      });
+
       window.addEventListener('hashchange', route);
       document.addEventListener('DOMContentLoaded', route);
     })();

@@ -1213,37 +1213,53 @@ class KaizenApp {
     const pages = document.querySelectorAll('.page');
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
+
+    const allowedPages = new Set(['dashboard', 'goals', 'habits', 'journal', 'group', 'learn']);
+
+    const showPage = (targetPage) => {
+      const pageKey = allowedPages.has(targetPage) ? targetPage : 'dashboard';
+
+      navLinks.forEach(l => l.classList.remove('active'));
+      document.querySelector(`.nav-link[data-page="${pageKey}"]`)?.classList.add('active');
+
+      pages.forEach(p => {
+        p.classList.toggle('active', p.id === `page-${pageKey}`);
+      });
+
+      // Trigger re-renders for specific pages to ensure data is fresh
+      if (pageKey === 'group') {
+        this.renderGroup();
+      } else if (pageKey === 'journal') {
+        this.renderJournal();
+      }
+
+      navMenu?.classList.remove('active');
+    };
+
+    const routeFromHash = () => {
+      const hash = (window.location.hash || '').replace('#', '').trim();
+      if (!hash) return;
+      showPage(hash);
+    };
     
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetPage = link.dataset.page;
-        
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-        
-        pages.forEach(p => {
-          p.classList.remove('active');
-          if (p.id === `page-${targetPage}`) {
-            p.classList.add('active');
-          }
-        });
-        
-        // Trigger re-renders for specific pages to ensure data is fresh
-        if (targetPage === 'group') {
-          this.renderGroup();
-        } else if (targetPage === 'journal') {
-          this.renderJournal();
+        if (targetPage) {
+          window.location.hash = `#${targetPage}`;
+          showPage(targetPage);
         }
-        
-        // Close mobile menu
-        navMenu?.classList.remove('active');
       });
     });
     
     navToggle?.addEventListener('click', () => {
       navMenu?.classList.toggle('active');
     });
+
+    // Support back/forward navigation and direct linking
+    window.addEventListener('hashchange', routeFromHash);
+    routeFromHash();
   }
 
   setupEventListeners() {

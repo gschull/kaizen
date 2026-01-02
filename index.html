@@ -862,6 +862,10 @@
         return /iphone|ipad|ipod/i.test(navigator.userAgent || '');
       }
 
+      function isLikelyMobileDevice() {
+        return /android|iphone|ipad|ipod/i.test(navigator.userAgent || '');
+      }
+
       function isStandaloneMode() {
         var mq = window.matchMedia && window.matchMedia('(display-mode: standalone)');
         return (mq && mq.matches) || window.navigator.standalone === true;
@@ -901,6 +905,8 @@
           if (!deferredPrompt) {
             if (isIosDevice()) {
               alert('To install kaiZEN: tap the Share button, then choose "Add to Home Screen".');
+            } else {
+              alert('Install may not be available yet. On Android Chrome, open the browser menu and choose "Install app" (or "Add to Home screen").');
             }
             return;
           }
@@ -918,8 +924,8 @@
         });
       }
 
-      // iOS: show the button proactively (it will show install instructions)
-      if (installBtn && isIosDevice() && !isStandaloneMode()) {
+      // Show the button proactively on mobile; it will either prompt (when available) or show instructions.
+      if (installBtn && isLikelyMobileDevice() && !isStandaloneMode()) {
         showInstallButton();
       }
 

@@ -1328,6 +1328,9 @@ class KaizenApp {
       });
     }
 
+    // Guard for inline fallbacks: if the main JS is running, don't double-wire.
+    try { window.__KAIZEN_NAV_WIRED__ = true; } catch (e) {}
+
     window.addEventListener('hashchange', routeFromHash);
     routeFromHash();
   }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kaizen-v27';
+const CACHE_NAME = 'kaizen-v28';
 const urlsToCache = [
   '/',
   '/index.html',

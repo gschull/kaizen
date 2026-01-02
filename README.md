@@ -1,45 +1,34 @@
-# 🌱 Family Kaizen Project
+# 🌱 kaiZEN
 
-## Welcome to Your Family's Continuous Improvement Journey
+## Personal-first continuous improvement (with optional groups)
 
-**Kaizen** (改善) is a Japanese philosophy meaning "change for better" or "continuous improvement." This project provides tools, guides, and templates to help your family embrace small, daily improvements that compound into significant positive changes over time.
+**Kaizen** (改善) is a Japanese philosophy meaning "change for better" or "continuous improvement." This repo contains the kaiZEN app and supporting docs for practicing small, daily improvements—solo or with a group.
 
 ## 📚 What's Included
 
-### Literature & Guides
-- **[Kaizen Philosophy Guide](docs/philosophy-guide.md)** - Understanding the core principles
-- **[Family Implementation Guide](docs/family-implementation-guide.md)** - Step-by-step approach
-- **[Age-Appropriate Activities](docs/age-appropriate-activities.md)** - Activities for all family members
-- **[Common Challenges & Solutions](docs/challenges-solutions.md)** - Troubleshooting guide
+### Guides
+- **[Philosophy Guide](docs/philosophy-guide.md)** - Core principles and mindset
+- **[Using kaiZEN (Personal + Groups)](docs/group-guide.md)** - How the app works
+- **[Challenges & Solutions](docs/challenges-solutions.md)** - Troubleshooting guide
 
-### Tools & Templates
-- **[Weekly Family Meeting Template](templates/weekly-meeting.md)** - Structure for family discussions
+### Templates
 - **[Personal Improvement Tracker](templates/personal-tracker.md)** - Individual progress tracking
-- **[Family Goals Board](templates/family-goals-board.md)** - Shared family objectives
-- **[Daily Reflection Journal](templates/daily-reflection.md)** - Simple daily prompts
-- **[Habit Stacking Worksheet](templates/habit-stacking.md)** - Building new habits
-- **[Celebration Log](templates/celebration-log.md)** - Recognizing achievements
 
-### Schedules & Plans
-- **[12-Week Implementation Plan](schedules/12-week-plan.md)** - Structured rollout
-- **[Daily Routines](schedules/daily-routines.md)** - Incorporating Kaizen into daily life
-- **[Monthly Themes](schedules/monthly-themes.md)** - Focus areas throughout the year
-
-## 🎯 Core Kaizen Principles for Families
+## 🎯 Core kaiZEN Principles
 
 1. **Small Steps** - Focus on tiny, manageable improvements
-2. **Everyone Participates** - Every family member has a voice
+2. **Everyone Participates** - If you're in a group, every member has a voice
 3. **No Blame** - Focus on solutions, not fault
 4. **Continuous Learning** - Embrace mistakes as opportunities
 5. **Celebrate Progress** - Acknowledge all improvements, no matter how small
 
 ## 🚀 Quick Start
 
-1. Read the [Philosophy Guide](docs/philosophy-guide.md) together as a family
-2. Hold your first [Family Meeting](templates/weekly-meeting.md)
-3. Choose ONE small area to improve
-4. Follow the [12-Week Plan](schedules/12-week-plan.md)
-5. Celebrate your progress!
+1. Read the [Philosophy Guide](docs/philosophy-guide.md)
+2. Choose ONE small area to improve
+3. Pick the SMALLEST possible step
+4. Track wins and reflect
+5. If you want collaboration, join or create a group in the app
 
 ## 💡 The 1% Rule
 

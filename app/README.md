@@ -1,6 +1,6 @@
-# Family Kaizen Web App
+# kaiZEN Web App
 
-A Progressive Web App (PWA) for bringing Kaizen philosophy to your family.
+A Progressive Web App (PWA) for personal continuous improvement, with optional group collaboration.
 
 ## Features
 
@@ -8,9 +8,9 @@ A Progressive Web App (PWA) for bringing Kaizen philosophy to your family.
 - 🎯 **Daily Focus** - Set and track your daily improvement goal
 - ✅ **Habit Tracking** - Build positive habits with streaks
 - 📔 **Reflection Journal** - Daily prompts for growth
-- 🎯 **Goal Setting** - Family and personal goals with progress tracking
-- 👨‍👩‍👧‍👦 **Family Features** - Track family members, log shared wins
-- ⏱️ **Meeting Timer** - Guided 15-minute family meetings
+- 🎯 **Goal Setting** - Personal and group goals with progress tracking
+- 👥 **Groups (Optional)** - Join/create a group to share goals and wins
+- ⏱️ **Weekly Review Timer** - Guided 15-minute weekly review
 - 📚 **Learn** - Kaizen principles and tips built-in
 
 ## Quick Start
@@ -58,12 +58,7 @@ app/
 
 ## Data Storage
 
-All data is stored locally in your browser using `localStorage`. Your data never leaves your device.
-
-To export your data, open the browser console and run:
-```javascript
-console.log(JSON.stringify(localStorage));
-```
+The app stores identity/scope locally (via `localStorage`) and syncs goals/habits/wins/reflections to Firestore for realtime updates.
 
 ## Deployment Options
 
@@ -110,7 +105,7 @@ Edit CSS variables in `public/css/styles.css`:
 
 ### Meeting Steps
 
-Edit `Family.meetingSteps` in `public/js/app.js`:
+Edit `meetingSteps` in `public/js/app.js`:
 
 ```javascript
 meetingSteps: [

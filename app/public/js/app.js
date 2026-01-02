@@ -372,7 +372,7 @@ class KaizenApp {
         </div>
         <div class="modal-body" style="text-align: center;">
           <p>Share this code so others can join your group:</p>
-          <div class="family-code-display">${code}</div>
+          <div class="group-code-display">${code}</div>
           <p class="small">They'll need this code to join "${groupName}"</p>
           <button class="btn btn-primary" id="copyCodeBtn">📋 Copy Code</button>
           <button class="btn btn-outline" id="closeCodeModal">Got it!</button>
@@ -601,13 +601,13 @@ class KaizenApp {
     const personalGoals = this.data.goals.filter(g => !g.completed && g.assignee?.toLowerCase() !== 'group');
     
     // Render group goals
-    const familyContainer = document.getElementById('familyGoals');
-    if (familyContainer) {
+    const groupContainer = document.getElementById('groupGoals');
+    if (groupContainer) {
       if (groupGoals.length === 0) {
-        familyContainer.innerHTML = `<p class="empty-state">No group goals yet. Set a shared goal together!</p>`;
+        groupContainer.innerHTML = `<p class="empty-state">No group goals yet. Set a shared goal together!</p>`;
       } else {
-        familyContainer.innerHTML = groupGoals.map(goal => this.renderGoalCard(goal)).join('');
-        this.attachGoalEventListeners(familyContainer);
+        groupContainer.innerHTML = groupGoals.map(goal => this.renderGoalCard(goal)).join('');
+        this.attachGoalEventListeners(groupContainer);
       }
     }
     
@@ -914,16 +914,16 @@ class KaizenApp {
     }
     
     // Render group/shared wins on Group page
-    const familyWinsContainer = document.getElementById('familyWins');
-    if (familyWinsContainer) {
+    const groupWinsContainer = document.getElementById('groupWins');
+    if (groupWinsContainer) {
       const recentWins = this.data.wins
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 10);
       
       if (recentWins.length === 0) {
-        familyWinsContainer.innerHTML = `<p class="empty-state">Log wins to celebrate progress!</p>`;
+        groupWinsContainer.innerHTML = `<p class="empty-state">Log wins to celebrate progress!</p>`;
       } else {
-        familyWinsContainer.innerHTML = recentWins.map(win => `
+        groupWinsContainer.innerHTML = recentWins.map(win => `
           <div class="win-item">
             <span class="win-icon">🏆</span>
             <div class="win-content">
@@ -981,7 +981,7 @@ class KaizenApp {
     const streakEl = document.getElementById('currentStreak');
     const habitsEl = document.getElementById('habitsCompleted');
     const winsEl = document.getElementById('totalWins');
-    const membersEl = document.getElementById('familyMembersCount');
+    const membersEl = document.getElementById('groupMembersCount');
     
     if (streakEl) streakEl.textContent = bestStreak;
     if (habitsEl) habitsEl.textContent = `${habitsCompletedToday}/${totalHabits}`;
@@ -1208,7 +1208,7 @@ class KaizenApp {
 
   setupEventListeners() {
     // Add Goal buttons
-    document.getElementById('addFamilyGoal')?.addEventListener('click', () => this.openGoalModal('group'));
+    document.getElementById('addGroupGoal')?.addEventListener('click', () => this.openGoalModal('group'));
     document.getElementById('addPersonalGoal')?.addEventListener('click', () => this.openGoalModal('personal'));
     
     // Add Habit button
@@ -1228,7 +1228,7 @@ class KaizenApp {
           case 'viewHabits':
             document.querySelector('[data-page="habits"]')?.click();
             break;
-          case 'familyMeeting':
+          case 'groupMeeting':
             this.openModal('meetingTimerOverlay');
             break;
         }
@@ -1735,7 +1735,7 @@ class KaizenApp {
     // Notify about wins from OTHER group members
     addedWins.forEach(win => {
       if (win.member && win.member !== this.userName) {
-        this.showFamilyNotification(
+        this.showGroupNotification(
           `🏆 ${win.member} logged a win!`,
           win.description || 'Check out their achievement!'
         );
@@ -1759,7 +1759,7 @@ class KaizenApp {
       
       // Someone just completed a habit
       if (!wasCompletedToday && isCompletedToday && newHabit.assignee !== this.userName) {
-        this.showFamilyNotification(
+        this.showGroupNotification(
           `✅ ${newHabit.assignee} completed a habit!`,
           `"${newHabit.name}" - Keep up the great work!`
         );
@@ -1772,7 +1772,7 @@ class KaizenApp {
         const oldStreak = oldHabit.streak || 0;
         milestones.forEach(milestone => {
           if (oldStreak < milestone && newHabit.streak >= milestone) {
-            this.showFamilyNotification(
+            this.showGroupNotification(
               `🔥 ${newHabit.assignee} hit a ${milestone}-day streak!`,
               `"${newHabit.name}" - Amazing consistency!`
             );
@@ -1793,7 +1793,7 @@ class KaizenApp {
     
     addedGoals.forEach(goal => {
       if (goal.createdBy && goal.createdBy !== this.userName) {
-        this.showFamilyNotification(
+        this.showGroupNotification(
           `🎯 ${goal.createdBy} added a new goal!`,
           goal.title
         );
@@ -1809,7 +1809,7 @@ class KaizenApp {
       if (oldGoal.progress < 100 && newGoal.progress >= 100) {
         const achiever = newGoal.assignee || newGoal.createdBy || 'Someone';
         if (achiever !== this.userName) {
-          this.showFamilyNotification(
+          this.showGroupNotification(
             `🎉 ${achiever} completed a goal!`,
             `"${newGoal.title}" - Celebrate with them!`
           );
@@ -1828,7 +1828,7 @@ class KaizenApp {
     
     addedMembers.forEach(member => {
       if (member.name && member.name !== this.userName) {
-        this.showFamilyNotification(
+        this.showGroupNotification(
           `👋 ${member.name} joined the group!`,
           'Welcome them to your kaiZEN journey!'
         );
@@ -1837,7 +1837,7 @@ class KaizenApp {
     });
   }
 
-  showFamilyNotification(title, body) {
+  showGroupNotification(title, body) {
     if (Notification.permission !== 'granted') return;
     if (document.hasFocus()) return; // Don't show if app is focused
     
@@ -1845,7 +1845,7 @@ class KaizenApp {
       body: body,
       icon: '/icons/icon-192.png',
       badge: '/icons/icon-72.png',
-      tag: 'kaizen-family-activity',
+      tag: 'kaizen-group-activity',
       renotify: true
     });
   }

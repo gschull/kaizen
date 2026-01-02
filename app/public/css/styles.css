@@ -1,43 +1,11 @@
-/* kaiZEN App - Styles */
-
+/* Group Members */
+.group-members {
 :root {
   /* Colors */
   --primary: #10b981;
   --primary-dark: #059669;
   --primary-light: #d1fae5;
-  --secondary: #6366f1;
-  --secondary-light: #e0e7ff;
-  --accent: #f59e0b;
-  --accent-light: #fef3c7;
-  
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --error: #ef4444;
-  --info: #3b82f6;
-  
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-300: #d1d5db;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
-  
-  --white: #ffffff;
-  --black: #000000;
-  
-  /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
+.group-code-display {
   --font-size-4xl: 2.25rem;
   
   /* Spacing */
@@ -716,8 +684,8 @@ li {
   color: var(--gray-500);
 }
 
-/* Family Members */
-.family-members {
+/* Group Members */
+.group-members {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: var(--spacing-md);
@@ -783,7 +751,7 @@ li {
   border-radius: var(--radius-full);
 }
 
-.family-code-display {
+.group-code-display {
   font-family: monospace;
   font-size: 2rem;
   font-weight: bold;
@@ -793,41 +761,6 @@ li {
   border-radius: var(--radius-md);
   margin: 1rem 0;
   user-select: all;
-}
-
-.family-member-card {
-  background: var(--gray-50);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  text-align: center;
-}
-
-.family-member-avatar {
-  width: 80px;
-  height: 80px;
-  background: var(--primary-light);
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-3xl);
-  margin: 0 auto var(--spacing-md);
-}
-
-.family-member-name {
-  font-weight: 600;
-  margin-bottom: var(--spacing-xs);
-}
-
-.family-member-role {
-  font-size: var(--font-size-sm);
-  color: var(--gray-500);
-}
-
-.family-member-streak {
-  margin-top: var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  color: var(--primary);
 }
 
 /* Meeting Guide */

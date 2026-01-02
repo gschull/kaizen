@@ -1,4 +1,4 @@
-# 🚀 Family Kaizen Quick Start Card
+# 🚀 kaiZEN Quick Start Card
 
 ## Print This Page for Easy Reference!
 
@@ -19,12 +19,12 @@ A Japanese philosophy of continuous improvement through small, daily steps.
 
 ---
 
-## 5 Family Kaizen Principles
+## 5 kaiZEN Principles
 
 | Principle | Meaning |
 |-----------|---------|
 | 🐢 **Small Steps** | Tiny improvements beat big plans |
-| 👨‍👩‍👧‍👦 **Everyone Participates** | Every voice matters |
+| 👥 **Everyone Participates** | In a group, every voice matters |
 | 🚫 **No Blame** | Focus on solutions, not fault |
 | 📚 **Learn from Mistakes** | Failures are teachers |
 | 🎉 **Celebrate Progress** | Every win counts |
@@ -39,32 +39,32 @@ Ask this when:
 - Facing a problem
 - Feeling stuck
 - Wanting to grow
-- At family meetings
+- During weekly reviews (solo or group)
 
 ---
 
 ## Quick Start Steps
 
 ### Week 1
-1. ☐ Discuss Kaizen as a family
+1. ☐ Pick one area to improve
 2. ☐ Choose ONE area to improve
 3. ☐ Pick the SMALLEST possible step
 4. ☐ Start tracking
 
 ### Ongoing
-5. ☐ Hold weekly 15-min meetings
+5. ☐ Do a weekly 15-min review
 6. ☐ Celebrate all wins
 7. ☐ Add new focus when ready
 
 ---
 
-## Weekly Meeting (15 min)
+## Weekly Review (15 min)
 
 1. **Celebrate** (3 min) - What went well?
 2. **Reflect** (3 min) - What did we learn?
 3. **Discuss** (4 min) - Any challenges?
 4. **Plan** (3 min) - What's next?
-5. **Appreciate** (2 min) - Thank each other
+5. **Appreciate** (2 min) - Note one thing you're grateful for
 
 ---
 
@@ -98,7 +98,7 @@ Ask this when:
 
 ---
 
-## Our Family's First Focus
+## My First Focus
 
 **Area:** _________________________________
 
@@ -106,13 +106,13 @@ Ask this when:
 
 **Start Date:** _________________________________
 
-**Meeting Day/Time:** _________________________________
+**Weekly Review Day/Time:** _________________________________
 
 ---
 
-## Family Kaizen Motto
+## kaiZEN Motto
 
-Write your family's motto here:
+Write your motto here:
 
 ```
 _____________________________________________
@@ -126,24 +126,13 @@ _____________________________________________
 
 ## Resources in This Project
 
-📚 **Literature:**
+📚 **Guides:**
 - Philosophy Guide
-- Implementation Guide  
-- Age-Appropriate Activities
+- Using kaiZEN (Personal + Groups)
 - Challenges & Solutions
 
-📋 **Templates:**
-- Weekly Meeting
+📋 **Template:**
 - Personal Tracker
-- Family Goals Board
-- Daily Reflection
-- Habit Stacking
-- Celebration Log
-
-📅 **Schedules:**
-- 12-Week Plan
-- Daily Routines
-- Monthly Themes
 
 ---
 

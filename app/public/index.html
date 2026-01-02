@@ -86,7 +86,7 @@
             </div>
             <div class="stat-card">
               <div class="stat-icon">👥</div>
-              <div class="stat-value" id="familyMembersCount">0</div>
+              <div class="stat-value" id="groupMembersCount">0</div>
               <div class="stat-label">Group Members</div>
             </div>
           </div>
@@ -110,7 +110,7 @@
                   <span class="action-icon">✓</span>
                   <span class="action-text">Check Habits</span>
                 </button>
-                <button class="action-btn" data-action="familyMeeting">
+                <button class="action-btn" data-action="groupMeeting">
                   <span class="action-icon">👥</span>
                   <span class="action-text">Weekly Review</span>
                 </button>
@@ -152,10 +152,10 @@
           <div class="card">
             <div class="card-header">
               <h2>Group Goals</h2>
-              <button class="btn btn-primary" id="addFamilyGoal">+ Add Goal</button>
+              <button class="btn btn-primary" id="addGroupGoal">+ Add Goal</button>
             </div>
             <div class="card-body">
-              <div id="familyGoals" class="goals-list">
+              <div id="groupGoals" class="goals-list">
                 <p class="empty-state">No group goals yet. Set a shared goal together!</p>
               </div>
             </div>
@@ -271,7 +271,7 @@
             </div>
             <div class="card-body" style="text-align: center;">
               <p>Share this code so others can join your group:</p>
-              <div class="family-code-display" id="groupCodeDisplay" style="font-size: 2rem; font-weight: bold; letter-spacing: 0.3em; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin: 1rem 0;">---</div>
+              <div class="group-code-display" id="groupCodeDisplay" style="font-size: 2rem; font-weight: bold; letter-spacing: 0.3em; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin: 1rem 0;">---</div>
               <button class="btn btn-primary" id="copyGroupCode">📋 Copy Code</button>
               <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
                 <strong>How to add group members:</strong><br>
@@ -313,7 +313,7 @@
               <h2>👥 Group Members</h2>
             </div>
             <div class="card-body">
-              <div id="groupMembersList" class="family-members">
+              <div id="groupMembersList" class="group-members">
                 <p class="empty-state">No one else has joined yet. Share the code above!</p>
               </div>
             </div>
@@ -358,7 +358,7 @@
               <h2>🏆 Group Wins</h2>
             </div>
             <div class="card-body">
-              <div id="familyWins" class="wins-list">
+              <div id="groupWins" class="wins-list">
                 <p class="empty-state">Log group wins to celebrate together!</p>
               </div>
             </div>
@@ -378,10 +378,6 @@
           <div class="learn-nav">
             <button class="learn-nav-btn active" data-section="philosophy">🎋 Philosophy</button>
             <button class="learn-nav-btn" data-section="5s">📖 5S Framework</button>
-            <button class="learn-nav-btn" data-section="activities">🎮 Activities</button>
-            <button class="learn-nav-btn" data-section="12week">📅 12-Week Plan</button>
-            <button class="learn-nav-btn" data-section="challenges">🔧 Challenges</button>
-            <button class="learn-nav-btn" data-section="templates">📋 Templates</button>
           </div>
 
           <!-- Philosophy Section -->
@@ -417,9 +413,9 @@
                     <p>Focus on tiny, manageable improvements rather than overwhelming changes</p>
                   </div>
                   <div class="principle-card">
-                    <div class="principle-icon">👨‍👩‍👧‍👦</div>
+                    <div class="principle-icon">👥</div>
                     <h3>Everyone Participates</h3>
-                    <p>Every family member has a voice and contributes to improvement</p>
+                    <p>If you're in a group, everyone contributes. In personal mode, it's just you.</p>
                   </div>
                   <div class="principle-card">
                     <div class="principle-icon">🚫</div>
@@ -453,7 +449,6 @@
                   <li>When facing a problem</li>
                   <li>When feeling stuck</li>
                   <li>When wanting to grow</li>
-                  <li>During family meetings</li>
                   <li>Before starting any task</li>
                 </ul>
               </div>
@@ -520,7 +515,7 @@
                 <h2>📖 The 5S Framework</h2>
               </div>
               <div class="card-body">
-                <p>5S is a workplace organization method that creates efficiency through organization. Applied to family life, it helps create harmony and reduce stress.</p>
+                <p>5S is a workplace organization method that creates efficiency through organization. Applied to daily life, it helps reduce friction and stress.</p>
               </div>
             </div>
 
@@ -531,22 +526,12 @@
               </div>
               <div class="card-body collapsible-content">
                 <p><strong>Meaning:</strong> Separate the necessary from the unnecessary</p>
-                <p><strong>Family Application:</strong></p>
-                <ul>
-                  <li>Sort through toys, keeping only what's used and loved</li>
-                  <li>Organize clothes by season and fit</li>
-                  <li>Review activities - keep what brings value</li>
-                  <li>Identify which commitments matter most</li>
-                </ul>
                 <p><strong>Questions to Ask:</strong></p>
                 <ul>
                   <li>"Have we used this in the last year?"</li>
-                  <li>"Does this bring value or joy to our family?"</li>
+                  <li>"Does this bring value or joy to my life?"</li>
                   <li>"If we didn't have this, would we miss it?"</li>
                 </ul>
-                <div class="activity-box">
-                  <strong>🎮 Family Activity:</strong> Do a "toy sort" together - create keep, donate, and trash piles. Let kids make decisions about their own items.
-                </div>
               </div>
             </div>
 
@@ -557,17 +542,7 @@
               </div>
               <div class="card-body collapsible-content">
                 <p><strong>Meaning:</strong> A place for everything, everything in its place</p>
-                <p><strong>Family Application:</strong></p>
-                <ul>
-                  <li>Create designated spots for keys, backpacks, shoes</li>
-                  <li>Use labels and bins for toy organization</li>
-                  <li>Establish a family command center</li>
-                  <li>Create homework stations</li>
-                </ul>
                 <p><strong>Key Concept:</strong> Items should be stored where they're used, not where there's space.</p>
-                <div class="activity-box">
-                  <strong>🎮 Family Activity:</strong> Create a "landing pad" by the door with hooks for backpacks, a tray for keys, and a basket for items that need to leave the house.
-                </div>
               </div>
             </div>
 
@@ -578,17 +553,7 @@
               </div>
               <div class="card-body collapsible-content">
                 <p><strong>Meaning:</strong> Keep things clean and inspect through cleaning</p>
-                <p><strong>Family Application:</strong></p>
-                <ul>
-                  <li>Daily quick clean-ups (5-10 minutes)</li>
-                  <li>Age-appropriate cleaning responsibilities</li>
-                  <li>Weekly family cleaning time</li>
-                  <li>"Clean as you go" mindset</li>
-                </ul>
                 <p><strong>Beyond Physical:</strong> Also applies to relationships - keep communication clean and clear.</p>
-                <div class="activity-box">
-                  <strong>🎮 Family Activity:</strong> "10-Minute Tidy" - set a timer and everyone cleans their area. Make it fun with music!
-                </div>
               </div>
             </div>
 
@@ -599,17 +564,7 @@
               </div>
               <div class="card-body collapsible-content">
                 <p><strong>Meaning:</strong> Create consistent practices</p>
-                <p><strong>Family Application:</strong></p>
-                <ul>
-                  <li>Morning and evening routines</li>
-                  <li>Weekly family meeting schedule</li>
-                  <li>Consistent meal times</li>
-                  <li>Bedtime routines</li>
-                </ul>
                 <p><strong>Key Concept:</strong> Routines reduce decision fatigue and create predictability.</p>
-                <div class="activity-box">
-                  <strong>🎮 Family Activity:</strong> Create a visual routine chart together. Let kids decorate it and check off items as they complete them.
-                </div>
               </div>
             </div>
 
@@ -620,869 +575,7 @@
               </div>
               <div class="card-body collapsible-content">
                 <p><strong>Meaning:</strong> Maintain and review standards</p>
-                <p><strong>Family Application:</strong></p>
-                <ul>
-                  <li>Weekly family meetings to review progress</li>
-                  <li>Monthly celebration of improvements</li>
-                  <li>Quarterly review of what's working</li>
-                  <li>Annual family goal setting</li>
-                </ul>
                 <p><strong>Key Concept:</strong> The hardest part is maintaining. Build in regular check-ins.</p>
-                <div class="activity-box">
-                  <strong>🎮 Family Activity:</strong> "kaiZEN Corner" - a dedicated weekly time to discuss what's working and what could improve.
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Age-Appropriate Activities Section -->
-          <div class="learn-section" id="learn-activities">
-            <div class="card">
-              <div class="card-header">
-                <h2>🎮 Age-Appropriate Activities</h2>
-              </div>
-              <div class="card-body">
-                <p>kaiZEN can be adapted for every age! Here are specific activities tailored to different developmental stages.</p>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>👶 Ages 3-6: Little Improvers</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <p><strong>Core Concept:</strong> "A little bit better each day"</p>
-                
-                <div class="activity-item">
-                  <h4>🐢 The kaiZEN Turtle</h4>
-                  <p>Use a stuffed turtle as a "kaiZEN buddy." The turtle reminds everyone that slow and steady wins!</p>
-                  <ul>
-                    <li>Have the turtle "notice" improvements</li>
-                    <li>Let children teach the turtle new things they've learned</li>
-                    <li>The turtle can "suggest" small challenges</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>⭐ Growing Star Chart</h4>
-                  <p>Create a visual chart where stars grow from seeds to full stars:</p>
-                  <ul>
-                    <li>Trying something = seed planted 🌱</li>
-                    <li>Getting better = sprout 🌿</li>
-                    <li>Doing well = flower 🌸</li>
-                    <li>Mastered = full star ⭐</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>🧸 Toy Tidying Game</h4>
-                  <p>"Can we put away 5 toys before the song ends?"</p>
-                  <ul>
-                    <li>Gradually increase the number</li>
-                    <li>Celebrate beating previous records</li>
-                    <li>Make it collaborative, not competitive</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>🌈 Rainbow Improvements</h4>
-                  <p>Each day, identify one thing that got a little better:</p>
-                  <ul>
-                    <li>Red day: I got better at...</li>
-                    <li>Orange day: I tried...</li>
-                    <li>Yellow day: I helped with...</li>
-                    <li>Complete a rainbow over a week!</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🧒 Ages 7-10: Growing Improvers</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <p><strong>Core Concept:</strong> "I can improve anything with practice"</p>
-
-                <div class="activity-item">
-                  <h4>📊 Personal Best Tracker</h4>
-                  <p>Track "personal bests" in various areas:</p>
-                  <ul>
-                    <li>Reading: pages/books per week</li>
-                    <li>Math: problems solved correctly</li>
-                    <li>Chores: time to complete tasks</li>
-                    <li>Sports: specific skill metrics</li>
-                  </ul>
-                  <p><em>Focus on beating their own records, not others!</em></p>
-                </div>
-
-                <div class="activity-item">
-                  <h4>🔬 Experiment Journal</h4>
-                  <p>Try small changes and record results:</p>
-                  <ul>
-                    <li>"What if I pack my backpack at night?"</li>
-                    <li>"What if I read for 10 minutes before bed?"</li>
-                    <li>Record: Hypothesis → Action → Result</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>👑 kaiZEN Captain (Rotating Role)</h4>
-                  <p>Each week, one child becomes the "kaiZEN Captain" who:</p>
-                  <ul>
-                    <li>Leads the opening of family meetings</li>
-                    <li>Points out family improvements</li>
-                    <li>Suggests one small improvement for the week</li>
-                    <li>Leads the celebration</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>🎯 Skill Tree</h4>
-                  <p>Draw a tree where branches represent different skills:</p>
-                  <ul>
-                    <li>Add leaves as skills develop</li>
-                    <li>Different colors for different skill areas</li>
-                    <li>Celebrate when branches "bloom"</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🧑 Ages 11-13: Independent Improvers</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <p><strong>Core Concept:</strong> "I take ownership of my growth"</p>
-
-                <div class="activity-item">
-                  <h4>📱 Digital Habit Tracker</h4>
-                  <p>Use this app or a spreadsheet to track habits they choose:</p>
-                  <ul>
-                    <li>Let them pick 3-5 habits to track</li>
-                    <li>Weekly review of streaks</li>
-                    <li>Monthly adjustment of goals</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>🎥 Video Progress Journal</h4>
-                  <p>Record short videos showing skill progression:</p>
-                  <ul>
-                    <li>Musical instrument practice</li>
-                    <li>Sports skills</li>
-                    <li>Art projects</li>
-                    <li>Watch compilation monthly to see growth</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>💼 Personal Project</h4>
-                  <p>Choose one "passion project" to improve over 3 months:</p>
-                  <ul>
-                    <li>Break into weekly mini-goals</li>
-                    <li>Document the journey</li>
-                    <li>Present progress at family meetings</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>🤝 Teach to Learn</h4>
-                  <p>Once they master something, teach it to a younger sibling:</p>
-                  <ul>
-                    <li>Reinforces their own learning</li>
-                    <li>Builds leadership skills</li>
-                    <li>Creates family bonding</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🧑‍🎓 Teens (14+): Self-Directed Improvers</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <p><strong>Core Concept:</strong> "I design my own growth path"</p>
-
-                <div class="activity-item">
-                  <h4>📚 Personal Development Plan</h4>
-                  <p>Create a quarterly growth plan:</p>
-                  <ul>
-                    <li>Identify 3 areas for improvement</li>
-                    <li>Set specific, measurable goals</li>
-                    <li>Define weekly actions</li>
-                    <li>Monthly self-assessment</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>💡 1% Better Daily Reflection</h4>
-                  <p>End-of-day journaling practice:</p>
-                  <ul>
-                    <li>What went well today?</li>
-                    <li>What could be 1% better?</li>
-                    <li>What will I do differently tomorrow?</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>👨‍👩‍👧 Mentor Role</h4>
-                  <p>Take responsibility for helping younger family members:</p>
-                  <ul>
-                    <li>Homework help sessions</li>
-                    <li>Teaching life skills</li>
-                    <li>Being a positive role model</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>👨‍👩‍👧‍👦 Whole Family Activities</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="activity-item">
-                  <h4>🏠 Family kaiZEN Board</h4>
-                  <p>A visible board with sections:</p>
-                  <ul>
-                    <li><strong>Ideas:</strong> Improvement suggestions from anyone</li>
-                    <li><strong>In Progress:</strong> What we're working on</li>
-                    <li><strong>Done:</strong> Completed improvements</li>
-                    <li><strong>Celebrate:</strong> Wins to acknowledge</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>📷 Monthly Photo Challenge</h4>
-                  <p>Take before/after photos of areas that improve:</p>
-                  <ul>
-                    <li>Organized spaces</li>
-                    <li>Garden growth</li>
-                    <li>Skill demonstrations</li>
-                    <li>Create a family improvement album</li>
-                  </ul>
-                </div>
-
-                <div class="activity-item">
-                  <h4>🎲 kaiZEN Game Night</h4>
-                  <p>Monthly game night with a twist:</p>
-                  <ul>
-                    <li>Each person shares one improvement they made</li>
-                    <li>Play cooperative games that teach teamwork</li>
-                    <li>Celebrate family achievements</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 12-Week Plan Section -->
-          <div class="learn-section" id="learn-12week">
-            <div class="card">
-              <div class="card-header">
-                <h2>📅 12-Week Family kaiZEN Plan</h2>
-              </div>
-              <div class="card-body">
-                <p>A structured approach to building lasting kaiZEN habits in your family. Take it one week at a time!</p>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🌱 Phase 1: Foundation (Weeks 1-3)</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="week-item">
-                  <h4>Week 1: Introduction & Buy-In</h4>
-                  <p><strong>Theme:</strong> "What is kaiZEN?"</p>
-                  <ul>
-                    <li>✅ Hold family meeting to introduce kaiZEN</li>
-                    <li>✅ Watch age-appropriate videos about improvement</li>
-                    <li>✅ Create family kaiZEN board or poster</li>
-                    <li>✅ Each person shares one thing they want to improve</li>
-                    <li>✅ Set up this app and create your family code</li>
-                  </ul>
-                </div>
-
-                <div class="week-item">
-                  <h4>Week 2: Establishing Rhythms</h4>
-                  <p><strong>Theme:</strong> "Building Our Routine"</p>
-                  <ul>
-                    <li>✅ Set recurring time for weekly family meetings</li>
-                    <li>✅ Create morning and evening routine charts</li>
-                    <li>✅ Each person picks ONE small habit to track</li>
-                    <li>✅ Practice daily check-ins (2 minutes at dinner)</li>
-                    <li>✅ Document starting point with photos/notes</li>
-                  </ul>
-                </div>
-
-                <div class="week-item">
-                  <h4>Week 3: First Improvements</h4>
-                  <p><strong>Theme:</strong> "Small Steps, Big Impact"</p>
-                  <ul>
-                    <li>✅ Choose one family improvement project</li>
-                    <li>✅ Break it into tiny steps</li>
-                    <li>✅ Celebrate first week of habit tracking</li>
-                    <li>✅ Identify what's working and what's not</li>
-                    <li>✅ Adjust based on feedback</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🏗️ Phase 2: Building (Weeks 4-6)</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="week-item">
-                  <h4>Week 4: 5S - Sort & Set in Order</h4>
-                  <p><strong>Theme:</strong> "A Place for Everything"</p>
-                  <ul>
-                    <li>✅ Learn about 5S framework together</li>
-                    <li>✅ Each person sorts one area (drawer, closet, etc.)</li>
-                    <li>✅ Create "homes" for commonly lost items</li>
-                    <li>✅ Label storage areas</li>
-                    <li>✅ Share before/after at family meeting</li>
-                  </ul>
-                </div>
-
-                <div class="week-item">
-                  <h4>Week 5: 5S - Shine & Standardize</h4>
-                  <p><strong>Theme:</strong> "Clean Systems"</p>
-                  <ul>
-                    <li>✅ Assign age-appropriate cleaning tasks</li>
-                    <li>✅ Create cleaning schedules</li>
-                    <li>✅ Establish "clean as you go" habits</li>
-                    <li>✅ Standardize meal prep routines</li>
-                    <li>✅ Create checklist for common tasks</li>
-                  </ul>
-                </div>
-
-                <div class="week-item">
-                  <h4>Week 6: 5S - Sustain</h4>
-                  <p><strong>Theme:</strong> "Making It Stick"</p>
-                  <ul>
-                    <li>✅ Review all 5S improvements</li>
-                    <li>✅ Create maintenance schedules</li>
-                    <li>✅ Assign "kaiZEN Captains" for different areas</li>
-                    <li>✅ Plan monthly 5S reviews</li>
-                    <li>✅ Celebrate completion of 5S journey!</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🚀 Phase 3: Expanding (Weeks 7-9)</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="week-item">
-                  <h4>Week 7: Personal Goals</h4>
-                  <p><strong>Theme:</strong> "Growing Individually"</p>
-                  <ul>
-                    <li>✅ Each person sets one meaningful personal goal</li>
-                    <li>✅ Break goals into weekly milestones</li>
-                    <li>✅ Create accountability partnerships</li>
-                    <li>✅ Start daily reflection practice</li>
-                    <li>✅ Share progress strategies at family meeting</li>
-                  </ul>
-                </div>
-
-                <div class="week-item">
-                  <h4>Week 8: Family Goals</h4>
-                  <p><strong>Theme:</strong> "Growing Together"</p>
-                  <ul>
-                    <li>✅ Brainstorm family improvement ideas</li>
-                    <li>✅ Vote on one big family goal</li>
-                    <li>✅ Create action plan together</li>
-                    <li>✅ Assign roles and responsibilities</li>
-                    <li>✅ Set check-in schedule</li>
-                  </ul>
-                </div>
-
-                <div class="week-item">
-                  <h4>Week 9: Overcoming Obstacles</h4>
-                  <p><strong>Theme:</strong> "Learning from Challenges"</p>
-                  <ul>
-                    <li>✅ Discuss what's been hard</li>
-                    <li>✅ Use problem-solving techniques together</li>
-                    <li>✅ Adjust systems that aren't working</li>
-                    <li>✅ Celebrate persistence and effort</li>
-                    <li>✅ Share lessons learned</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🎯 Phase 4: Sustaining (Weeks 10-12)</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="week-item">
-                  <h4>Week 10: Review & Refine</h4>
-                  <p><strong>Theme:</strong> "What Have We Learned?"</p>
-                  <ul>
-                    <li>✅ Review all progress from weeks 1-9</li>
-                    <li>✅ Identify top 3 improvements that stuck</li>
-                    <li>✅ Note what didn't work and why</li>
-                    <li>✅ Refine family meeting format</li>
-                    <li>✅ Update routines based on learning</li>
-                  </ul>
-                </div>
-
-                <div class="week-item">
-                  <h4>Week 11: Future Planning</h4>
-                  <p><strong>Theme:</strong> "Looking Ahead"</p>
-                  <ul>
-                    <li>✅ Set goals for next quarter</li>
-                    <li>✅ Create long-term family vision</li>
-                    <li>✅ Identify skills to develop</li>
-                    <li>✅ Plan family traditions around kaiZEN</li>
-                    <li>✅ Discuss how to share with others</li>
-                  </ul>
-                </div>
-
-                <div class="week-item">
-                  <h4>Week 12: Celebrate & Commit</h4>
-                  <p><strong>Theme:</strong> "Our kaiZEN Journey"</p>
-                  <ul>
-                    <li>✅ Host special celebration event</li>
-                    <li>✅ Create family "improvement portfolio"</li>
-                    <li>✅ Share testimonials from each member</li>
-                    <li>✅ Commit to ongoing practice</li>
-                    <li>✅ Plan quarterly review dates</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Challenges Section -->
-          <div class="learn-section" id="learn-challenges">
-            <div class="card">
-              <div class="card-header">
-                <h2>🔧 Common Challenges & Solutions</h2>
-              </div>
-              <div class="card-body">
-                <p>Every family faces obstacles. Here's how to overcome the most common ones.</p>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🚀 Getting Started</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "This seems overwhelming"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Start with ONE thing - just weekly family meetings</li>
-                    <li>Use the "2-minute rule" - if it takes less than 2 minutes, do it now</li>
-                    <li>Remember: kaiZEN is about small steps, not big changes</li>
-                    <li>Pick the lowest-hanging fruit first</li>
-                  </ul>
-                </div>
-
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "My spouse/partner isn't on board"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Start yourself - model the behavior</li>
-                    <li>Share small wins without pressure</li>
-                    <li>Invite, don't require participation</li>
-                    <li>Focus on benefits they care about (less stress, more time, etc.)</li>
-                    <li>Give it time - results speak louder than words</li>
-                  </ul>
-                </div>
-
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "Kids aren't interested"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Make it fun with games and challenges</li>
-                    <li>Let them choose what to improve</li>
-                    <li>Use age-appropriate language and activities</li>
-                    <li>Celebrate their ideas enthusiastically</li>
-                    <li>Connect improvements to things they care about</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>⏰ Time & Consistency</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "We don't have time for meetings"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Start with just 10 minutes</li>
-                    <li>Combine with existing routine (Sunday dinner)</li>
-                    <li>Use car time for mini check-ins</li>
-                    <li>Morning meetings work for some families</li>
-                    <li>Remember: it's an investment that saves time later</li>
-                  </ul>
-                </div>
-
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "We keep forgetting"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Set recurring calendar reminders</li>
-                    <li>Link to existing habits (after Sunday breakfast)</li>
-                    <li>Make it visible - poster, whiteboard</li>
-                    <li>Assign a "meeting reminder" role</li>
-                    <li>Keep supplies ready (this app, snacks)</li>
-                  </ul>
-                </div>
-
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "We started strong but faded"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>This is normal! Restart without guilt</li>
-                    <li>Simplify - you were probably doing too much</li>
-                    <li>Focus on just one habit at a time</li>
-                    <li>Create accountability (share with others)</li>
-                    <li>Review why it matters to your family</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>👨‍👩‍👧‍👦 Family Dynamics</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "Meetings turn into arguments"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Start with positives ALWAYS</li>
-                    <li>Use a talking stick - only speaker holds it</li>
-                    <li>Focus on systems, not people</li>
-                    <li>Have a "parking lot" for heated topics</li>
-                    <li>Keep it short - stop before frustration builds</li>
-                    <li>Model calm behavior as parents</li>
-                  </ul>
-                </div>
-
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "One child dominates discussions"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Use structured turn-taking (round-robin)</li>
-                    <li>Give everyone equal time with a timer</li>
-                    <li>Ask quiet members direct questions</li>
-                    <li>Celebrate listening as much as talking</li>
-                    <li>One-on-one pre-meetings with shy kids</li>
-                  </ul>
-                </div>
-
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "Different ages have different needs"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Use age-appropriate activities (see Activities section)</li>
-                    <li>Pair older/younger kids for some goals</li>
-                    <li>Have individual check-ins plus family time</li>
-                    <li>Let older kids lead some discussions</li>
-                    <li>Youngest can be "celebration leader"</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>📈 Progress & Motivation</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "We're not seeing results"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Document your starting point (photos, notes)</li>
-                    <li>Look for small wins - they add up</li>
-                    <li>Compare to last month, not yesterday</li>
-                    <li>Celebrate effort, not just outcomes</li>
-                    <li>Review your "wins" list regularly</li>
-                  </ul>
-                </div>
-
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "Kids only want rewards"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Phase out material rewards gradually</li>
-                    <li>Use experiential rewards (game night, outing)</li>
-                    <li>Build intrinsic motivation through choice</li>
-                    <li>Help them see natural consequences of improvement</li>
-                    <li>Celebrate the feeling of accomplishment</li>
-                  </ul>
-                </div>
-
-                <div class="challenge-item">
-                  <h4>❌ Challenge: "Perfectionism is getting in the way"</h4>
-                  <p><strong>✅ Solution:</strong></p>
-                  <ul>
-                    <li>Embrace "good enough" - progress over perfection</li>
-                    <li>Model making mistakes and learning from them</li>
-                    <li>Celebrate "good tries" not just successes</li>
-                    <li>Use "yet" language: "I can't do it YET"</li>
-                    <li>Share your own imperfect improvements</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Templates Section -->
-          <div class="learn-section" id="learn-templates">
-            <div class="card">
-              <div class="card-header">
-                <h2>📋 Templates & Resources</h2>
-              </div>
-              <div class="card-body">
-                <p>Ready-to-use templates to support your family kaiZEN journey.</p>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🗣️ Weekly Family Meeting Template</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="template-content">
-                  <p><strong>Duration:</strong> 15-20 minutes</p>
-                  <p><strong>When:</strong> Same time each week (consistency is key!)</p>
-                  
-                  <h4>Meeting Agenda</h4>
-                  <ol class="meeting-agenda">
-                    <li>
-                      <strong>🌟 Celebrations (5 min)</strong>
-                      <p>Each person shares one win from the week - big or small!</p>
-                    </li>
-                    <li>
-                      <strong>📊 Progress Check (5 min)</strong>
-                      <p>Review goals and habits. What's on track? What needs adjustment?</p>
-                    </li>
-                    <li>
-                      <strong>🔧 Problem Solving (5 min)</strong>
-                      <p>Discuss ONE challenge. Brainstorm solutions together.</p>
-                    </li>
-                    <li>
-                      <strong>🎯 Next Week (3 min)</strong>
-                      <p>Set focus for the coming week. What small step will we take?</p>
-                    </li>
-                    <li>
-                      <strong>🙌 Closing (2 min)</strong>
-                      <p>Appreciation round - thank someone for something specific.</p>
-                    </li>
-                  </ol>
-
-                  <h4>Tips for Success</h4>
-                  <ul>
-                    <li>Keep it positive - start and end with celebrations</li>
-                    <li>Use a timer to stay on track</li>
-                    <li>Rotate meeting roles (leader, timekeeper, note-taker)</li>
-                    <li>Have snacks - make it enjoyable!</li>
-                    <li>No phones or distractions</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🌅 Daily Reflection Questions</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="template-content">
-                  <p><strong>When:</strong> At dinner or bedtime (2-3 minutes)</p>
-                  
-                  <h4>Questions for Kids</h4>
-                  <ul>
-                    <li>What made you smile today?</li>
-                    <li>What did you get better at today?</li>
-                    <li>What was hard today? How did you handle it?</li>
-                    <li>What are you looking forward to tomorrow?</li>
-                  </ul>
-
-                  <h4>Questions for Teens/Adults</h4>
-                  <ul>
-                    <li>What went well today?</li>
-                    <li>What could I have done 1% better?</li>
-                    <li>What did I learn?</li>
-                    <li>What am I grateful for?</li>
-                    <li>What's one thing I want to improve tomorrow?</li>
-                  </ul>
-
-                  <h4>Weekly Review Questions</h4>
-                  <ul>
-                    <li>What was my biggest win this week?</li>
-                    <li>What habit am I most proud of maintaining?</li>
-                    <li>What didn't go as planned? What can I learn?</li>
-                    <li>What do I want to focus on next week?</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🔗 Habit Stacking Guide</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="template-content">
-                  <p><strong>Formula:</strong> After I [CURRENT HABIT], I will [NEW HABIT].</p>
-                  
-                  <h4>Morning Stack Examples</h4>
-                  <ul>
-                    <li>After I wake up, I will make my bed (1 min)</li>
-                    <li>After I make my bed, I will drink a glass of water</li>
-                    <li>After I brush my teeth, I will review my goals for the day</li>
-                    <li>After I eat breakfast, I will put my dishes in the dishwasher</li>
-                  </ul>
-
-                  <h4>After School Stack Examples</h4>
-                  <ul>
-                    <li>After I come home, I will put my backpack in its spot</li>
-                    <li>After I have a snack, I will do 15 minutes of homework</li>
-                    <li>After homework, I will have free time</li>
-                  </ul>
-
-                  <h4>Evening Stack Examples</h4>
-                  <ul>
-                    <li>After dinner, I will help clear the table</li>
-                    <li>After clearing, I will pack tomorrow's bag</li>
-                    <li>After I brush my teeth, I will lay out tomorrow's clothes</li>
-                    <li>After I get in bed, I will share one good thing from my day</li>
-                  </ul>
-
-                  <h4>Tips</h4>
-                  <ul>
-                    <li>Start with 2-3 habits, then add more</li>
-                    <li>Link new habits to strong existing habits</li>
-                    <li>Keep new habits very small at first</li>
-                    <li>Use visual cues as reminders</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>🎊 Celebration Ideas</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="template-content">
-                  <h4>Daily Celebrations (Free!)</h4>
-                  <ul>
-                    <li>High fives and fist bumps</li>
-                    <li>Special family cheer or dance</li>
-                    <li>Ring a "celebration bell"</li>
-                    <li>Add a sticker to the chart</li>
-                    <li>Take a victory photo</li>
-                  </ul>
-
-                  <h4>Weekly Celebrations</h4>
-                  <ul>
-                    <li>Choose dinner menu</li>
-                    <li>Extra screen time (15-30 min)</li>
-                    <li>Stay up 15 minutes later</li>
-                    <li>Pick the family movie</li>
-                    <li>Special dessert</li>
-                  </ul>
-
-                  <h4>Monthly Celebrations</h4>
-                  <ul>
-                    <li>Family outing (park, museum, etc.)</li>
-                    <li>Game night with favorite snacks</li>
-                    <li>Make a "trophy" or certificate</li>
-                    <li>Phone call to grandparents to share progress</li>
-                    <li>Create a memory in the celebration log</li>
-                  </ul>
-
-                  <h4>Milestone Celebrations (12 weeks, etc.)</h4>
-                  <ul>
-                    <li>Special dinner out</li>
-                    <li>Family photo shoot</li>
-                    <li>Create family improvement video</li>
-                    <li>Plan a fun family adventure</li>
-                    <li>Add to family tradition</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-header collapsible" onclick="toggleCollapse(this)">
-                <h3>📆 Daily Routine Checklist</h3>
-                <span class="collapse-icon">▼</span>
-              </div>
-              <div class="card-body collapsible-content">
-                <div class="template-content">
-                  <h4>Morning Routine (Sample)</h4>
-                  <ul class="checklist">
-                    <li>☐ Wake up at consistent time</li>
-                    <li>☐ Make bed</li>
-                    <li>☐ Get dressed</li>
-                    <li>☐ Eat breakfast</li>
-                    <li>☐ Brush teeth</li>
-                    <li>☐ Check backpack/bag</li>
-                    <li>☐ One kind word to family member</li>
-                  </ul>
-
-                  <h4>After School/Work Routine (Sample)</h4>
-                  <ul class="checklist">
-                    <li>☐ Put belongings in their place</li>
-                    <li>☐ Healthy snack</li>
-                    <li>☐ Share one thing from the day</li>
-                    <li>☐ Complete homework/tasks</li>
-                    <li>☐ 20 minutes of physical activity</li>
-                  </ul>
-
-                  <h4>Evening Routine (Sample)</h4>
-                  <ul class="checklist">
-                    <li>☐ Family dinner together</li>
-                    <li>☐ Help with cleanup</li>
-                    <li>☐ Prepare for tomorrow</li>
-                    <li>☐ Personal hygiene routine</li>
-                    <li>☐ Reading time</li>
-                    <li>☐ Daily reflection</li>
-                    <li>☐ Consistent bedtime</li>
-                  </ul>
-
-                  <p class="note"><em>Customize these for your family's needs and ages!</em></p>
-                </div>
               </div>
             </div>
           </div>
@@ -1635,7 +728,7 @@
     <div class="modal-overlay" id="meetingTimerOverlay">
       <div class="modal modal-timer">
         <div class="modal-header">
-          <h2>Family Meeting</h2>
+          <h2>Weekly Review</h2>
           <button class="modal-close" id="closeMeetingTimer">&times;</button>
         </div>
         <div class="modal-body">

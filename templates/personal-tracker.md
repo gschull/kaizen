@@ -2,7 +2,7 @@
 
 ## About This Tracker
 
-This tracker is for individual family members to monitor their personal Kaizen journey. Each person can customize it to fit their goals and style.
+This tracker is for individuals to monitor their personal kaiZEN journey. Customize it to fit your goals and style.
 
 ---
 

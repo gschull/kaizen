@@ -21,9 +21,6 @@ class KaizenApp {
   }
 
   async init() {
-    // Wait for Firebase to be ready
-    await this.waitForFirebase();
-
     // Migrate legacy keys from the old family-based version
     this.migrateLegacyLocalStorage();
     
@@ -33,6 +30,32 @@ class KaizenApp {
     this.groupRoot = localStorage.getItem('kaizen_group_root');
 
     this.userKey = this.userName ? this.normalizeKey(this.userName) : null;
+
+    // Set up UI wiring immediately so the app remains usable even if Firebase is
+    // blocked or slow (previously init() would await Firebase forever).
+    if (this.groupCode) {
+      this.scope = 'group';
+    } else {
+      this.scope = 'personal';
+    }
+
+    if (this.userName) {
+      this.hideSetupModal();
+    } else {
+      this.showSetupModal();
+    }
+
+    this.setupNavigation();
+    this.setupEventListeners();
+    this.setupMeetingTimer();
+    this.setupNotifications();
+
+    // Wait for Firebase (with a timeout) and then enable realtime features.
+    const firebaseReady = await this.waitForFirebase(8000);
+    if (!firebaseReady) {
+      // UI still works; data actions will show a friendly message.
+      return;
+    }
 
     if (this.userName) {
       if (this.groupCode) {
@@ -45,15 +68,7 @@ class KaizenApp {
       }
 
       this.setupRealtimeListeners();
-      this.hideSetupModal();
-    } else {
-      this.showSetupModal();
     }
-    
-    this.setupNavigation();
-    this.setupEventListeners();
-    this.setupMeetingTimer();
-    this.setupNotifications();
   }
 
   normalizeStoredGroupCode(raw) {
@@ -132,14 +147,20 @@ class KaizenApp {
     return this.helpers.doc(this.db, ...this.getRootPath(), subcollection, docId);
   }
 
-  async waitForFirebase() {
+  async waitForFirebase(timeoutMs = 8000) {
+    if (this.db && this.helpers) return true;
     return new Promise((resolve) => {
+      const deadline = Date.now() + Math.max(0, Number(timeoutMs) || 0);
       const check = () => {
         if (window.firebaseDB && window.firebaseHelpers) {
           this.db = window.firebaseDB;
           this.helpers = window.firebaseHelpers;
-          resolve();
+          resolve(true);
         } else {
+          if (timeoutMs && Date.now() > deadline) {
+            resolve(false);
+            return;
+          }
           setTimeout(check, 100);
         }
       };
@@ -1302,6 +1323,10 @@ class KaizenApp {
     const addGoalForm = document.getElementById('addGoalForm');
     addGoalForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!this.db || !this.helpers) {
+        this.showToast('Still loading… If this persists, refresh and disable blockers.');
+        return;
+      }
       const form = e.target;
       await this.addGoal(
         form.goalTitle.value,
@@ -1318,6 +1343,10 @@ class KaizenApp {
     const addHabitForm = document.getElementById('addHabitForm');
     addHabitForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!this.db || !this.helpers) {
+        this.showToast('Still loading… If this persists, refresh and disable blockers.');
+        return;
+      }
       const form = e.target;
       await this.addHabit(
         form.habitName.value,
@@ -1333,6 +1362,10 @@ class KaizenApp {
     const addWinForm = document.getElementById('addWinForm');
     addWinForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!this.db || !this.helpers) {
+        this.showToast('Still loading… If this persists, refresh and disable blockers.');
+        return;
+      }
       const form = e.target;
       await this.addWin(form.winDescription.value);
       form.reset();
@@ -1344,6 +1377,10 @@ class KaizenApp {
     const addReflectionForm = document.getElementById('addReflectionForm');
     addReflectionForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!this.db || !this.helpers) {
+        this.showToast('Still loading… If this persists, refresh and disable blockers.');
+        return;
+      }
       const form = e.target;
       await this.addReflection(form.reflectionContent.value, form.reflectionMood.value);
       form.reset();
@@ -1354,6 +1391,10 @@ class KaizenApp {
     const reflectionForm = document.getElementById('reflectionForm');
     reflectionForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!this.db || !this.helpers) {
+        this.showToast('Still loading… If this persists, refresh and disable blockers.');
+        return;
+      }
       const form = e.target;
       const content = [
         form.reflectionWin?.value ? `🌟 Win: ${form.reflectionWin.value}` : '',

@@ -992,6 +992,72 @@
         });
       }
 
+      // Modal fallback (Add Goal/Habit/Win/Reflection)
+      function openOverlay(id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.add('active');
+      }
+
+      function closeOverlay(el) {
+        if (el) el.classList.remove('active');
+      }
+
+      var addPersonalGoalBtn = document.getElementById('addPersonalGoal');
+      if (addPersonalGoalBtn) {
+        addPersonalGoalBtn.addEventListener('click', function () {
+          var assignee = document.getElementById('goalAssignee');
+          if (assignee) {
+            assignee.value = '';
+            assignee.placeholder = 'Your name';
+          }
+          openOverlay('addGoalModal');
+        });
+      }
+
+      var addGroupGoalBtn = document.getElementById('addGroupGoal');
+      if (addGroupGoalBtn) {
+        addGroupGoalBtn.addEventListener('click', function () {
+          var assignee = document.getElementById('goalAssignee');
+          if (assignee) {
+            assignee.value = 'Group';
+            assignee.placeholder = 'Group (shared goal)';
+          }
+          openOverlay('addGoalModal');
+        });
+      }
+
+      var addHabitBtn = document.getElementById('addHabit');
+      if (addHabitBtn) {
+        addHabitBtn.addEventListener('click', function () {
+          openOverlay('addHabitModal');
+        });
+      }
+
+      document.querySelectorAll('[data-action]')
+        .forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var action = btn.getAttribute('data-action');
+            if (action === 'addWin') openOverlay('addWinModal');
+            if (action === 'addReflection') openOverlay('addReflectionModal');
+            if (action === 'groupMeeting') openOverlay('meetingTimerOverlay');
+          });
+        });
+
+      document.querySelectorAll('[data-close-modal]')
+        .forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeOverlay(btn.closest('.modal-overlay'));
+          });
+        });
+
+      document.querySelectorAll('.modal-overlay')
+        .forEach(function (overlay) {
+          overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeOverlay(overlay);
+          });
+        });
+
       window.addEventListener('hashchange', route);
       document.addEventListener('DOMContentLoaded', route);
     })();

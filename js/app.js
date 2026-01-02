@@ -224,6 +224,37 @@ class KaizenApp {
     if (modal) modal.remove();
   }
 
+  ensureSetupModal() {
+    if (document.getElementById('setupModal')) return;
+    this.showSetupModal();
+
+    if (this.userName) {
+      document.getElementById('personalName')?.value = this.userName;
+      document.getElementById('joinName')?.value = this.userName;
+      document.getElementById('createName')?.value = this.userName;
+    }
+  }
+
+  openSetupTab(tab = 'personal') {
+    this.ensureSetupModal();
+    const modal = document.getElementById('setupModal');
+    if (!modal) return;
+
+    modal.querySelectorAll('.setup-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === tab);
+    });
+
+    modal.querySelectorAll('.setup-panel').forEach(p => {
+      p.classList.toggle('active', p.id === `${tab}Panel`);
+    });
+
+    const errorEl = document.getElementById('setupError');
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.style.display = 'none';
+    }
+  }
+
   async startPersonal() {
     const name = document.getElementById('personalName').value.trim();
     const errorEl = document.getElementById('setupError');
@@ -517,8 +548,8 @@ class KaizenApp {
         })
       );
     } else {
-      // Personal mode: treat "group members" as just you
-      this.data.groupMembers = [{ id: this.userKey, name: this.userName, isCreator: true }];
+      // Personal mode: no group members
+      this.data.groupMembers = [];
       this.renderGroup();
       this.renderDashboard();
       checkInitialLoad();
@@ -975,7 +1006,7 @@ class KaizenApp {
       ? Math.max(...this.data.habits.map(h => h.streak || 0))
       : 0;
     const totalWins = this.data.wins.length;
-    const memberCount = (this.data.groupMembers || []).length;
+    const memberCount = this.scope === 'group' ? (this.data.groupMembers || []).length : 0;
     
     // Update individual stat elements (matching the HTML IDs)
     const streakEl = document.getElementById('currentStreak');
@@ -1237,6 +1268,10 @@ class KaizenApp {
     
     // Start Meeting button
     document.getElementById('startMeeting')?.addEventListener('click', () => this.openModal('meetingTimerOverlay'));
+
+    // Group page quick actions
+    document.getElementById('openJoinGroup')?.addEventListener('click', () => this.openSetupTab('join'));
+    document.getElementById('openCreateGroup')?.addEventListener('click', () => this.openSetupTab('create'));
     
     // Add Goal Form
     const addGoalForm = document.getElementById('addGoalForm');

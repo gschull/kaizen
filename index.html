@@ -151,24 +151,24 @@
 
           <div class="card">
             <div class="card-header">
-              <h2>Group Goals</h2>
-              <button class="btn btn-primary" id="addGroupGoal">+ Add Goal</button>
-            </div>
-            <div class="card-body">
-              <div id="groupGoals" class="goals-list">
-                <p class="empty-state">No group goals yet. Set a shared goal together!</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
               <h2>Personal Goals</h2>
               <button class="btn btn-primary" id="addPersonalGoal">+ Add Goal</button>
             </div>
             <div class="card-body">
               <div id="personalGoals" class="goals-list">
                 <p class="empty-state">No personal goals yet. What do you want to improve?</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Group Goals</h2>
+              <button class="btn btn-primary" id="addGroupGoal">+ Add Goal</button>
+            </div>
+            <div class="card-body">
+              <div id="groupGoals" class="goals-list">
+                <p class="empty-state">No group goals yet. Set a shared goal together!</p>
               </div>
             </div>
           </div>
@@ -273,6 +273,10 @@
               <p>Share this code so others can join your group:</p>
               <div class="group-code-display" id="groupCodeDisplay" style="font-size: 2rem; font-weight: bold; letter-spacing: 0.3em; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin: 1rem 0;">---</div>
               <button class="btn btn-primary" id="copyGroupCode">📋 Copy Code</button>
+              <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-outline" id="openJoinGroup">Join Group</button>
+                <button class="btn btn-outline" id="openCreateGroup">Create Group</button>
+              </div>
               <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
                 <strong>How to add group members:</strong><br>
                 They open this app on their device → "Join Group" → Enter the code above
@@ -515,7 +519,7 @@
                 <h2>📖 The 5S Framework</h2>
               </div>
               <div class="card-body">
-                <p>5S is a workplace organization method that creates efficiency through organization. Applied to daily life, it helps reduce friction and stress.</p>
+                <p>5S is an organization method that creates efficiency through organization. Applied to daily life, it helps reduce friction and stress.</p>
               </div>
             </div>
 

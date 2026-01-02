@@ -29,7 +29,7 @@ class KaizenApp {
     
     // Personal identity is required; group is optional
     this.userName = localStorage.getItem('kaizen_user_name');
-    this.groupCode = localStorage.getItem('kaizen_group_code');
+    this.groupCode = this.normalizeStoredGroupCode(localStorage.getItem('kaizen_group_code'));
     this.groupRoot = localStorage.getItem('kaizen_group_root');
 
     this.userKey = this.userName ? this.normalizeKey(this.userName) : null;
@@ -54,6 +54,15 @@ class KaizenApp {
     this.setupEventListeners();
     this.setupMeetingTimer();
     this.setupNotifications();
+  }
+
+  normalizeStoredGroupCode(raw) {
+    const value = (raw || '').trim().toUpperCase();
+    if (!value) return null;
+    if (value === 'NULL' || value === 'UNDEFINED') return null;
+    // Codes are typically 6 chars, but allow a little flexibility.
+    if (!/^[A-Z0-9]{4,12}$/.test(value)) return null;
+    return value;
   }
 
   migrateLegacyLocalStorage() {
@@ -1392,22 +1401,22 @@ class KaizenApp {
     // Leave group (returns to personal mode)
     const leaveGroupBtn = document.getElementById('leaveGroup');
     leaveGroupBtn?.addEventListener('click', () => {
-      if (this.scope !== 'group' || !this.groupCode) {
-        this.showToast('You are not in a group.');
-        return;
-      }
-      if (confirm('Leave this group? Your personal data will remain on this device.')) {
-        localStorage.removeItem('kaizen_group_code');
-        localStorage.removeItem('kaizen_group_root');
-        this.groupCode = null;
-        this.groupRoot = null;
-        this.scope = 'personal';
+      const message = (this.scope === 'group' && this.groupCode)
+        ? 'Leave this group? Your personal data will remain on this device.'
+        : 'Switch to personal mode? (This clears any saved group code on this device.)';
 
-        // Reset listeners into personal mode
-        this.setupRealtimeListeners();
-        this.renderDashboard();
-        this.renderGroup();
-      }
+      if (!confirm(message)) return;
+
+      localStorage.removeItem('kaizen_group_code');
+      localStorage.removeItem('kaizen_group_root');
+      this.groupCode = null;
+      this.groupRoot = null;
+      this.scope = 'personal';
+
+      // Reset listeners into personal mode
+      this.setupRealtimeListeners();
+      this.renderDashboard();
+      this.renderGroup();
     });
     
     // Learn page navigation tabs

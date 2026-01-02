@@ -774,6 +774,19 @@
     window.firebaseDB = db;
     window.firebaseHelpers = { collection, doc, setDoc, getDoc, getDocs, onSnapshot, deleteDoc, query, where, orderBy };
   </script>
+  <script>
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').then(function (registration) {
+          if (registration && registration.update) registration.update();
+          navigator.serviceWorker.addEventListener('controllerchange', function () {
+            window.location.reload();
+          });
+        }).catch(function () {});
+      });
+    })();
+  </script>
   <script src="/js/app.js" type="module"></script>
 </body>
 </html>

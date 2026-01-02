@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="kaiZEN - Continuous improvement through small daily steps (personal-first, optional groups)">
+  <meta name="theme-color" content="#10b981">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="kaiZEN">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <title>kaiZEN - Continuous Improvement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Navigation -->
+    <nav class="nav" id="mainNav">
+      <div class="nav-brand">
+        <span class="nav-logo">🌱</span>
+        <span class="nav-title">kaiZEN</span>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="nav-menu" id="navMenu">
+        <a href="#" class="nav-link active" data-page="dashboard">Dashboard</a>
+        <a href="#" class="nav-link" data-page="goals">Goals</a>
+        <a href="#" class="nav-link" data-page="habits">Habits</a>
+        <a href="#" class="nav-link" data-page="journal">Journal</a>
+        <a href="#" class="nav-link" data-page="group">Group</a>
+        <a href="#" class="nav-link" data-page="learn">Learn</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard Page -->
+      <section class="page active" id="page-dashboard">
+        <div class="container">
+          <header class="page-header">
+            <h1>Welcome to kaiZEN</h1>
+            <p class="subtitle">Small steps, big results. Improve yourself (and optionally with a group).</p>
+          </header>
+
+          <!-- Daily Focus Card -->
+          <div class="card card-highlight">
+            <div class="card-header">
+              <h2>🎯 Today's Focus</h2>
+              <span class="date" id="currentDate"></span>
+            </div>
+            <div class="card-body">
+              <div class="focus-input-container">
+                <input type="text" id="dailyFocus" class="focus-input" placeholder="What's one small thing you'll improve today?">
+                <button class="btn btn-primary" id="saveFocus">Set Focus</button>
+              </div>
+              <div id="focusDisplay" class="focus-display hidden">
+                <p class="focus-text"></p>
+                <button class="btn btn-small btn-outline" id="editFocus">Edit</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">🔥</div>
+              <div class="stat-value" id="currentStreak">0</div>
+              <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">✅</div>
+              <div class="stat-value" id="habitsCompleted">0</div>
+              <div class="stat-label">Habits Today</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🏆</div>
+              <div class="stat-value" id="totalWins">0</div>
+              <div class="stat-label">Total Wins</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-value" id="groupMembersCount">0</div>
+              <div class="stat-label">Group Members</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="card">
+            <div class="card-header">
+              <h2>Quick Actions</h2>
+            </div>
+            <div class="card-body">
+              <div class="quick-actions">
+                <button class="action-btn" data-action="addWin">
+                  <span class="action-icon">🎉</span>
+                  <span class="action-text">Log a Win</span>
+                </button>
+                <button class="action-btn" data-action="addReflection">
+                  <span class="action-icon">📝</span>
+                  <span class="action-text">Daily Reflection</span>
+                </button>
+                <button class="action-btn" data-action="viewHabits">
+                  <span class="action-icon">✓</span>
+                  <span class="action-text">Check Habits</span>
+                </button>
+                <button class="action-btn" data-action="groupMeeting">
+                  <span class="action-icon">👥</span>
+                  <span class="action-text">Weekly Review</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Wins -->
+          <div class="card">
+            <div class="card-header">
+              <h2>🏆 Recent Wins</h2>
+              <button class="btn btn-small btn-outline" data-action="addWin">+ Add Win</button>
+            </div>
+            <div class="card-body">
+              <div id="recentWins" class="wins-list">
+                <p class="empty-state">No wins logged yet. Celebrate your first improvement!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- kaiZEN Quote -->
+          <div class="quote-card">
+            <blockquote id="dailyQuote">
+              "A journey of a thousand miles begins with a single step."
+            </blockquote>
+            <cite id="quoteAuthor">— Lao Tzu</cite>
+          </div>
+        </div>
+      </section>
+
+      <!-- Goals Page -->
+      <section class="page" id="page-goals">
+        <div class="container">
+          <header class="page-header">
+            <h1>🎯 Goals</h1>
+            <p class="subtitle">Set meaningful goals and break them into small steps</p>
+          </header>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Group Goals</h2>
+              <button class="btn btn-primary" id="addGroupGoal">+ Add Goal</button>
+            </div>
+            <div class="card-body">
+              <div id="groupGoals" class="goals-list">
+                <p class="empty-state">No group goals yet. Set a shared goal together!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Personal Goals</h2>
+              <button class="btn btn-primary" id="addPersonalGoal">+ Add Goal</button>
+            </div>
+            <div class="card-body">
+              <div id="personalGoals" class="goals-list">
+                <p class="empty-state">No personal goals yet. What do you want to improve?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Habits Page -->
+      <section class="page" id="page-habits">
+        <div class="container">
+          <header class="page-header">
+            <h1>✅ Daily Habits</h1>
+            <p class="subtitle">Small daily actions that compound into big results</p>
+          </header>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Today's Habits</h2>
+              <button class="btn btn-primary" id="addHabit">+ Add Habit</button>
+            </div>
+            <div class="card-body">
+              <div id="habitsList" class="habits-list">
+                <p class="empty-state">No habits tracked yet. Start with one small habit!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>📊 This Week</h2>
+            </div>
+            <div class="card-body">
+              <div id="weeklyHabitGrid" class="habit-grid">
+                <!-- Generated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Journal Page -->
+      <section class="page" id="page-journal">
+        <div class="container">
+          <header class="page-header">
+            <h1>📔 Reflection Journal</h1>
+            <p class="subtitle">Daily reflections to learn and grow</p>
+          </header>
+
+          <div class="card card-highlight">
+            <div class="card-header">
+              <h2>Today's Reflection</h2>
+            </div>
+            <div class="card-body">
+              <form id="reflectionForm" class="reflection-form">
+                <div class="form-group">
+                  <label for="reflectionWin">🌟 What went well today?</label>
+                  <textarea id="reflectionWin" rows="2" placeholder="One thing that went well..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="reflectionLearn">📚 What did you learn?</label>
+                  <textarea id="reflectionLearn" rows="2" placeholder="Something I learned..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="reflectionImprove">🎯 What will you improve tomorrow?</label>
+                  <textarea id="reflectionImprove" rows="2" placeholder="One small thing to improve..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="reflectionGratitude">💝 What are you grateful for?</label>
+                  <textarea id="reflectionGratitude" rows="2" placeholder="I'm grateful for..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save Reflection</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>Past Reflections</h2>
+            </div>
+            <div class="card-body">
+              <div id="pastReflections" class="reflections-list">
+                <p class="empty-state">No reflections yet. Start your first one above!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Group Page -->
+      <section class="page" id="page-group">
+        <div class="container">
+          <header class="page-header">
+            <h1>👥 Group</h1>
+            <p class="subtitle">Optional shared space (personal progress stays the focus)</p>
+          </header>
+
+          <!-- Group Code Card -->
+          <div class="card card-highlight">
+            <div class="card-header">
+              <h2>🔗 Your Group Code</h2>
+            </div>
+            <div class="card-body" style="text-align: center;">
+              <p>Share this code so others can join your group:</p>
+              <div class="group-code-display" id="groupCodeDisplay" style="font-size: 2rem; font-weight: bold; letter-spacing: 0.3em; padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin: 1rem 0;">---</div>
+              <button class="btn btn-primary" id="copyGroupCode">📋 Copy Code</button>
+              <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                <strong>How to add group members:</strong><br>
+                They open this app on their device → "Join Group" → Enter the code above
+              </p>
+            </div>
+          </div>
+
+          <!-- Current User Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2>👤 You're logged in as</h2>
+            </div>
+            <div class="card-body">
+              <p style="font-size: 1.2rem; font-weight: 600;" id="currentMember">---</p>
+              <button class="btn btn-outline btn-small" id="leaveGroup" style="margin-top: 0.5rem;">Leave Group</button>
+            </div>
+          </div>
+
+          <!-- Notifications Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2>🔔 Notifications</h2>
+            </div>
+            <div class="card-body">
+              <p style="margin-bottom: 1rem;">Get daily reminders to check in with your kaiZEN practice.</p>
+              <button class="btn btn-primary" id="notificationToggle">🔔 Enable Notifications</button>
+              <p class="notification-status" id="notificationStatus" style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-500);">Get daily reminders</p>
+              <div class="reminder-time-setting" style="margin-top: 1rem;">
+                <label for="reminderTime" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Reminder Time:</label>
+                <input type="time" id="reminderTime" value="19:00" class="form-input" style="max-width: 150px;">
+                <button class="btn btn-small btn-outline" id="saveReminderTime" style="margin-left: 0.5rem;">Save</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>👥 Group Members</h2>
+            </div>
+            <div class="card-body">
+              <div id="groupMembersList" class="group-members">
+                <p class="empty-state">No one else has joined yet. Share the code above!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>📅 Weekly Meeting</h2>
+            </div>
+            <div class="card-body">
+              <div class="meeting-guide">
+                <h3>15-Minute Group Check-in</h3>
+                <ol class="meeting-steps">
+                  <li>
+                    <strong>🎉 Celebrations (3 min)</strong>
+                    <p>Share wins from the week</p>
+                  </li>
+                  <li>
+                    <strong>💭 Reflections (3 min)</strong>
+                    <p>What did we learn?</p>
+                  </li>
+                  <li>
+                    <strong>🔧 Challenges (4 min)</strong>
+                    <p>What was hard? How can we help?</p>
+                  </li>
+                  <li>
+                    <strong>🎯 Next Steps (3 min)</strong>
+                    <p>What's our focus for next week?</p>
+                  </li>
+                  <li>
+                    <strong>💝 Appreciations (2 min)</strong>
+                    <p>Thank each other</p>
+                  </li>
+                </ol>
+                <button class="btn btn-primary btn-block" id="startMeeting">Start Meeting Timer</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h2>🏆 Group Wins</h2>
+            </div>
+            <div class="card-body">
+              <div id="groupWins" class="wins-list">
+                <p class="empty-state">Log group wins to celebrate together!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Learn Page -->
+      <section class="page" id="page-learn">
+        <div class="container">
+          <header class="page-header">
+            <h1>📚 Learn kaiZEN</h1>
+            <p class="subtitle">Understanding the philosophy of continuous improvement</p>
+          </header>
+
+          <!-- Learn Navigation -->
+          <div class="learn-nav">
+            <button class="learn-nav-btn active" data-section="philosophy">🎋 Philosophy</button>
+            <button class="learn-nav-btn" data-section="5s">📖 5S Framework</button>
+          </div>
+
+          <!-- Philosophy Section -->
+          <div class="learn-section active" id="learn-philosophy">
+            <div class="card">
+              <div class="card-header">
+                <h2>🎋 What is kaiZEN?</h2>
+              </div>
+              <div class="card-body learn-content">
+                <p><strong>kaiZEN (改善)</strong> is a Japanese philosophy meaning "change for better" or "continuous improvement."</p>
+                <p>The word combines two concepts:</p>
+                <ul>
+                  <li><strong>改 (kai)</strong> = change</li>
+                  <li><strong>善 (zen)</strong> = good, better</li>
+                </ul>
+                <p>The core idea is simple: <strong>small, daily improvements compound into significant results over time.</strong></p>
+                <div class="highlight-box">
+                  <p>If you get <strong>1% better each day</strong> for one year, you'll be <strong>37 times better</strong> by year's end!</p>
+                  <p class="math-note">1.01^365 = 37.78</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>🌟 The 5 Core Principles</h2>
+              </div>
+              <div class="card-body">
+                <div class="principles-grid">
+                  <div class="principle-card">
+                    <div class="principle-icon">🐢</div>
+                    <h3>Small Steps</h3>
+                    <p>Focus on tiny, manageable improvements rather than overwhelming changes</p>
+                  </div>
+                  <div class="principle-card">
+                    <div class="principle-icon">👥</div>
+                    <h3>Everyone Participates</h3>
+                    <p>If you're in a group, everyone contributes. In personal mode, it's just you.</p>
+                  </div>
+                  <div class="principle-card">
+                    <div class="principle-icon">🚫</div>
+                    <h3>No Blame</h3>
+                    <p>Focus on solutions and systems, not fault-finding</p>
+                  </div>
+                  <div class="principle-card">
+                    <div class="principle-icon">📚</div>
+                    <h3>Continuous Learning</h3>
+                    <p>Embrace mistakes as opportunities to grow</p>
+                  </div>
+                  <div class="principle-card">
+                    <div class="principle-icon">🎉</div>
+                    <h3>Celebrate Progress</h3>
+                    <p>Acknowledge all improvements, no matter how small</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>🔑 The Magic Question</h2>
+              </div>
+              <div class="card-body">
+                <div class="magic-question">
+                  <blockquote>"What small step can I take right now to improve?"</blockquote>
+                </div>
+                <p>Ask this question:</p>
+                <ul>
+                  <li>When facing a problem</li>
+                  <li>When feeling stuck</li>
+                  <li>When wanting to grow</li>
+                  <li>Before starting any task</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>⚡ kaiZEN vs. Innovation</h2>
+              </div>
+              <div class="card-body">
+                <div class="comparison-table">
+                  <div class="comparison-row header">
+                    <div>kaiZEN</div>
+                    <div>Innovation</div>
+                  </div>
+                  <div class="comparison-row">
+                    <div>Small, continuous changes</div>
+                    <div>Big, dramatic changes</div>
+                  </div>
+                  <div class="comparison-row">
+                    <div>Low risk</div>
+                    <div>High risk</div>
+                  </div>
+                  <div class="comparison-row">
+                    <div>Everyone participates</div>
+                    <div>Expert-driven</div>
+                  </div>
+                  <div class="comparison-row">
+                    <div>Uses existing resources</div>
+                    <div>Requires new resources</div>
+                  </div>
+                  <div class="comparison-row">
+                    <div>Sustainable long-term</div>
+                    <div>Can be disruptive</div>
+                  </div>
+                </div>
+                <p class="note">Both approaches have value! kaiZEN creates a foundation for sustainable growth.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2>💡 Quick Tips</h2>
+              </div>
+              <div class="card-body">
+                <ul class="tips-list">
+                  <li>Start smaller than you think necessary</li>
+                  <li>Focus on ONE improvement at a time</li>
+                  <li>Celebrate every win, no matter how small</li>
+                  <li>Mistakes are learning opportunities</li>
+                  <li>Consistency beats intensity</li>
+                  <li>Make good habits easy, bad habits hard</li>
+                  <li>Track your progress visually</li>
+                  <li>Review and adjust regularly</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5S Framework Section -->
+          <div class="learn-section" id="learn-5s">
+            <div class="card">
+              <div class="card-header">
+                <h2>📖 The 5S Framework</h2>
+              </div>
+              <div class="card-body">
+                <p>5S is a workplace organization method that creates efficiency through organization. Applied to daily life, it helps reduce friction and stress.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header collapsible" onclick="toggleCollapse(this)">
+                <h3>🗂️ 1. Seiri (整理) - Sort</h3>
+                <span class="collapse-icon">▼</span>
+              </div>
+              <div class="card-body collapsible-content">
+                <p><strong>Meaning:</strong> Separate the necessary from the unnecessary</p>
+                <p><strong>Questions to Ask:</strong></p>
+                <ul>
+                  <li>"Have we used this in the last year?"</li>
+                  <li>"Does this bring value or joy to my life?"</li>
+                  <li>"If we didn't have this, would we miss it?"</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header collapsible" onclick="toggleCollapse(this)">
+                <h3>📍 2. Seiton (整頓) - Set in Order</h3>
+                <span class="collapse-icon">▼</span>
+              </div>
+              <div class="card-body collapsible-content">
+                <p><strong>Meaning:</strong> A place for everything, everything in its place</p>
+                <p><strong>Key Concept:</strong> Items should be stored where they're used, not where there's space.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header collapsible" onclick="toggleCollapse(this)">
+                <h3>✨ 3. Seiso (清掃) - Shine</h3>
+                <span class="collapse-icon">▼</span>
+              </div>
+              <div class="card-body collapsible-content">
+                <p><strong>Meaning:</strong> Keep things clean and inspect through cleaning</p>
+                <p><strong>Beyond Physical:</strong> Also applies to relationships - keep communication clean and clear.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header collapsible" onclick="toggleCollapse(this)">
+                <h3>📋 4. Seiketsu (清潔) - Standardize</h3>
+                <span class="collapse-icon">▼</span>
+              </div>
+              <div class="card-body collapsible-content">
+                <p><strong>Meaning:</strong> Create consistent practices</p>
+                <p><strong>Key Concept:</strong> Routines reduce decision fatigue and create predictability.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header collapsible" onclick="toggleCollapse(this)">
+                <h3>🔄 5. Shitsuke (躾) - Sustain</h3>
+                <span class="collapse-icon">▼</span>
+              </div>
+              <div class="card-body collapsible-content">
+                <p><strong>Meaning:</strong> Maintain and review standards</p>
+                <p><strong>Key Concept:</strong> The hardest part is maintaining. Build in regular check-ins.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Add Goal Modal -->
+    <div class="modal-overlay" id="addGoalModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>🎯 Add New Goal</h2>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="addGoalForm">
+            <div class="form-group">
+              <label for="goalTitle">Goal Title</label>
+              <input type="text" id="goalTitle" name="goalTitle" class="form-input" placeholder="What do you want to achieve?" required>
+            </div>
+            <div class="form-group">
+              <label for="goalDescription">Description (optional)</label>
+              <textarea id="goalDescription" name="goalDescription" class="form-input" rows="2" placeholder="More details about this goal..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="goalAssignee">Who's working on this?</label>
+              <input type="text" id="goalAssignee" name="goalAssignee" class="form-input" placeholder="Your name">
+            </div>
+            <div class="form-group">
+              <label for="goalCategory">Category</label>
+              <select id="goalCategory" name="goalCategory" class="form-input">
+                <option value="health">💪 Health</option>
+                <option value="learning">📚 Learning</option>
+                <option value="group">👥 Group</option>
+                <option value="home">🏠 Home</option>
+                <option value="finance">💰 Finance</option>
+                <option value="fun">🎉 Fun</option>
+                <option value="personal">🌟 Personal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="goalDueDate">Target Date (optional)</label>
+              <input type="date" id="goalDueDate" name="goalDueDate" class="form-input">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Add Goal</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Habit Modal -->
+    <div class="modal-overlay" id="addHabitModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>🌱 Add New Habit</h2>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="addHabitForm">
+            <div class="form-group">
+              <label for="habitName">Habit Name</label>
+              <input type="text" id="habitName" name="habitName" class="form-input" placeholder="e.g., Read for 10 minutes" required>
+            </div>
+            <div class="form-group">
+              <label for="habitAssignee">Who's tracking this?</label>
+              <input type="text" id="habitAssignee" name="habitAssignee" class="form-input" placeholder="Your name">
+            </div>
+            <div class="form-group">
+              <label for="habitFrequency">Frequency</label>
+              <select id="habitFrequency" name="habitFrequency" class="form-input">
+                <option value="daily">Daily</option>
+                <option value="weekdays">Weekdays</option>
+                <option value="weekends">Weekends</option>
+                <option value="weekly">Weekly</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Add Habit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Win Modal -->
+    <div class="modal-overlay" id="addWinModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>🎉 Celebrate a Win!</h2>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="addWinForm">
+            <div class="form-group">
+              <label for="winDescription">What's the win?</label>
+              <textarea id="winDescription" name="winDescription" class="form-input" rows="3" placeholder="Share what went well..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">🏆 Log Win</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Reflection Modal -->
+    <div class="modal-overlay" id="addReflectionModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>📝 Daily Reflection</h2>
+          <button class="modal-close" data-close-modal>&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="addReflectionForm">
+            <div class="form-group">
+              <label for="reflectionContent">What's on your mind?</label>
+              <textarea id="reflectionContent" name="reflectionContent" class="form-input" rows="4" placeholder="Share your thoughts, learnings, or reflections..." required></textarea>
+            </div>
+            <div class="form-group">
+              <label>How are you feeling?</label>
+              <div class="mood-selector">
+                <label class="mood-option">
+                  <input type="radio" name="reflectionMood" value="great"> 
+                  <span>😄 Great</span>
+                </label>
+                <label class="mood-option">
+                  <input type="radio" name="reflectionMood" value="good" checked> 
+                  <span>🙂 Good</span>
+                </label>
+                <label class="mood-option">
+                  <input type="radio" name="reflectionMood" value="okay"> 
+                  <span>😐 Okay</span>
+                </label>
+                <label class="mood-option">
+                  <input type="radio" name="reflectionMood" value="challenging"> 
+                  <span>😤 Challenging</span>
+                </label>
+                <label class="mood-option">
+                  <input type="radio" name="reflectionMood" value="tough"> 
+                  <span>😢 Tough</span>
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save Reflection</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Meeting Timer Modal -->
+    <div class="modal-overlay" id="meetingTimerOverlay">
+      <div class="modal modal-timer">
+        <div class="modal-header">
+          <h2>Weekly Review</h2>
+          <button class="modal-close" id="closeMeetingTimer">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="timer-display">
+            <div class="timer-step" id="timerStep">Celebrations</div>
+            <div class="timer-time" id="timerTime">3:00</div>
+            <div class="timer-progress">
+              <div class="timer-progress-bar" id="timerProgress"></div>
+            </div>
+          </div>
+          <div class="timer-controls">
+            <button class="btn btn-outline" id="timerPrev">← Previous</button>
+            <button class="btn btn-primary" id="timerToggle">Start</button>
+            <button class="btn btn-outline" id="timerNext">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, doc, setDoc, getDoc, getDocs, onSnapshot, deleteDoc, query, where, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyBO03x1F0D0upvr-jAa5oNT6p7XPb-dNXI",
+      authDomain: "family-kaizen-app.firebaseapp.com",
+      projectId: "family-kaizen-app",
+      storageBucket: "family-kaizen-app.firebasestorage.app",
+      messagingSenderId: "838342248982",
+      appId: "1:838342248982:web:1e38cc0a6d3acad81b4337"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    // Make Firebase available globally
+    window.firebaseDB = db;
+    window.firebaseHelpers = { collection, doc, setDoc, getDoc, getDocs, onSnapshot, deleteDoc, query, where, orderBy };
+  </script>
+  <script src="/js/app.js" type="module"></script>
+</body>
+</html>

@@ -628,6 +628,22 @@ class KaizenApp {
   // =====================
 
   async addGoal(title, description, assignee, dueDate, category) {
+    if (!this.db || !this.helpers) {
+      const err = new Error('Firebase not ready');
+      err.code = 'firebase-not-ready';
+      throw err;
+    }
+    if (this.scope === 'personal' && (!this.userName || !this.userKey)) {
+      const err = new Error('Missing personal identity');
+      err.code = 'missing-identity';
+      throw err;
+    }
+    if (this.scope === 'group' && !this.groupCode) {
+      const err = new Error('Missing group code');
+      err.code = 'missing-group';
+      throw err;
+    }
+
     const goalId = 'goal_' + Date.now();
     await this.helpers.setDoc(
       this.docInScope('goals', goalId),
@@ -1388,6 +1404,11 @@ class KaizenApp {
         if (submitBtn) submitBtn.disabled = true;
 
         try {
+          if (!this.userName || !this.userKey) {
+            if (typeof this.openSetupTab === 'function') this.openSetupTab('personal');
+            this.showToast('Please enter your name first.');
+            return;
+          }
           if (!this.db || !this.helpers) {
             this.showToast('Still loading… If this persists, refresh and disable blockers.');
             return;
@@ -1409,7 +1430,19 @@ class KaizenApp {
           this.closeModal('addGoalModal');
         } catch (err) {
           console.error('Add goal failed:', err);
-          this.showToast('Could not add goal. Please try again.');
+          const code = err && err.code ? String(err.code) : '';
+          if (code === 'missing-identity') {
+            if (typeof this.openSetupTab === 'function') this.openSetupTab('personal');
+            this.showToast('Please enter your name first.');
+          } else if (code === 'permission-denied') {
+            this.showToast('Could not add goal (permission denied).');
+          } else if (code === 'unavailable') {
+            this.showToast('Could not add goal (offline). Check your connection.');
+          } else if (code) {
+            this.showToast(`Could not add goal (${code}). Try again.`);
+          } else {
+            this.showToast('Could not add goal. Please try again.');
+          }
         } finally {
           if (submitBtn) submitBtn.disabled = false;
           isHandlingAddGoal = false;

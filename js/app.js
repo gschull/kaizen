@@ -20,8 +20,157 @@ class KaizenApp {
     this._firebaseBootstrapped = false;
 
     this.displayMode = 'auto'; // 'auto' | 'mobile' | 'desktop'
+
+    this.editingGoalId = null;
+    this.editingHabitId = null;
     
     this.init();
+  }
+
+  // =====================
+  // LOCAL USER SWITCHING (NO AUTH)
+  // =====================
+
+  getKnownUsers() {
+    try {
+      const raw = localStorage.getItem('kaizen_known_users');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter(v => typeof v === 'string' && v.trim()) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  setKnownUsers(users) {
+    try {
+      const cleaned = Array.isArray(users) ? users.filter(v => typeof v === 'string' && v.trim()) : [];
+      localStorage.setItem('kaizen_known_users', JSON.stringify(cleaned));
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  rememberUser(name) {
+    const trimmed = (name || '').trim();
+    if (!trimmed) return;
+
+    const existing = this.getKnownUsers();
+    const next = [];
+    const seen = new Set();
+
+    // Always prefer the latest casing for the current user.
+    const candidates = [trimmed, ...existing];
+    for (const candidate of candidates) {
+      const key = this.normalizeKey(candidate);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      next.push(candidate);
+    }
+
+    this.setKnownUsers(next);
+    this.refreshAccountUI();
+  }
+
+  refreshAccountUI() {
+    const select = document.getElementById('knownUsersSelect');
+    const input = document.getElementById('loginNameInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    if (!select && !input && !loginBtn && !logoutBtn) return;
+
+    const known = this.getKnownUsers();
+    if (select) {
+      const selectedValue = select.value;
+      select.innerHTML = '<option value="">Select a saved user…</option>';
+      known.forEach((name) => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
+      if (this.userName) {
+        select.value = this.userName;
+      } else if (selectedValue) {
+        select.value = selectedValue;
+      }
+    }
+
+    if (input) {
+      if (this.userName && !input.value) input.value = this.userName;
+    }
+
+    if (logoutBtn) logoutBtn.disabled = !this.userName;
+    if (loginBtn) loginBtn.disabled = false;
+  }
+
+  async loginAs(name) {
+    const trimmed = (name || '').trim();
+    if (!trimmed) {
+      this.showToast('Please enter a name.');
+      return;
+    }
+
+    this.userName = trimmed;
+    this.userKey = this.normalizeKey(trimmed);
+    localStorage.setItem('kaizen_user_name', trimmed);
+    this.rememberUser(trimmed);
+
+    // If we have a group code stored, keep the current scope; otherwise default personal.
+    this.scope = this.groupCode ? 'group' : 'personal';
+    this.hideSetupModal();
+
+    // Ensure group membership doc exists when in group mode.
+    try {
+      if (this.db && this.helpers && this.scope === 'group' && this.groupCode) {
+        await this.helpers.setDoc(
+          this.helpers.doc(this.db, ...(this.getRootPath()), 'members', this.userKey),
+          {
+            name: this.userName,
+            lastActive: new Date().toISOString()
+          },
+          { merge: true }
+        );
+      }
+    } catch (e) {
+      // ignore; normal UI will still work offline/blocked
+    }
+
+    if (this.db && this.helpers) {
+      this.setupRealtimeListeners();
+    } else {
+      this.bootstrapFirebaseWhenReady();
+    }
+
+    this.refreshAccountUI();
+    this.showToast(`Logged in as ${trimmed}`);
+  }
+
+  logout() {
+    this.unsubscribers.forEach(unsub => unsub());
+    this.unsubscribers = [];
+
+    this.userName = null;
+    this.userKey = null;
+    this.scope = 'personal';
+    this.groupCode = null;
+    this.groupRoot = null;
+
+    localStorage.removeItem('kaizen_user_name');
+    localStorage.removeItem('kaizen_group_code');
+    localStorage.removeItem('kaizen_group_root');
+
+    this.data = { goals: [], habits: [], wins: [], reflections: [], groupMembers: [] };
+    this.editingGoalId = null;
+    this.editingHabitId = null;
+
+    this.showSetupModal();
+    this.renderDashboard();
+    this.renderGoals();
+    this.renderHabits();
+    this.renderJournal();
+    this.refreshAccountUI();
+    this.showToast('Logged out');
   }
 
   async init() {
@@ -330,6 +479,7 @@ class KaizenApp {
     this.userKey = this.normalizeKey(name);
     this.scope = 'personal';
     localStorage.setItem('kaizen_user_name', name);
+    this.rememberUser(name);
 
     this.hideSetupModal();
     this.setupRealtimeListeners();
@@ -380,6 +530,7 @@ class KaizenApp {
       localStorage.setItem('kaizen_user_name', name);
       localStorage.setItem('kaizen_group_code', code);
       localStorage.setItem('kaizen_group_root', root);
+      this.rememberUser(name);
 
       this.hideSetupModal();
       this.setupRealtimeListeners();
@@ -433,6 +584,7 @@ class KaizenApp {
       localStorage.setItem('kaizen_user_name', name);
       localStorage.setItem('kaizen_group_code', code);
       localStorage.setItem('kaizen_group_root', 'groups');
+      this.rememberUser(name);
 
       this.hideSetupModal();
       this.setupRealtimeListeners();
@@ -717,6 +869,47 @@ class KaizenApp {
     }
   }
 
+  async updateGoal(goalId, updates) {
+    await this.helpers.setDoc(
+      this.docInScope('goals', goalId),
+      { ...updates, updatedAt: new Date().toISOString() },
+      { merge: true }
+    );
+
+    this.data.goals = (this.data.goals || []).map(g => {
+      if (g.id !== goalId) return g;
+      return { ...g, ...updates };
+    });
+    this.renderGoals();
+    this.renderDashboard();
+    this.showToast('Goal updated');
+  }
+
+  async reopenGoal(goalId) {
+    await this.updateGoal(goalId, { completed: false, completedAt: null, progress: 0 });
+    this.showToast('Goal reopened');
+  }
+
+  beginEditGoal(goalId) {
+    const goal = (this.data.goals || []).find(g => g.id === goalId);
+    if (!goal) return;
+
+    const titleInput = document.getElementById('goalTitle');
+    const descInput = document.getElementById('goalDescription');
+    const assigneeInput = document.getElementById('goalAssignee');
+    const dueInput = document.getElementById('goalDueDate');
+    const categoryInput = document.getElementById('goalCategory');
+
+    if (titleInput) titleInput.value = goal.title || '';
+    if (descInput) descInput.value = goal.description || '';
+    if (assigneeInput) assigneeInput.value = goal.assignee || '';
+    if (dueInput) dueInput.value = goal.dueDate || '';
+    if (categoryInput) categoryInput.value = goal.category || 'personal';
+
+    this.editingGoalId = goalId;
+    this.openModal('addGoalModal');
+  }
+
   async deleteGoal(goalId) {
     await this.helpers.deleteDoc(
       this.docInScope('goals', goalId)
@@ -725,15 +918,26 @@ class KaizenApp {
   }
 
   renderGoals() {
-    // Separate goals by type (group vs personal)
-    const groupGoals = this.data.goals.filter(g => !g.completed && ((g.assignee || '').toLowerCase() === 'group'));
-    const personalGoals = this.data.goals.filter(g => !g.completed && ((g.assignee || '').toLowerCase() !== 'group'));
+    const allGoals = this.data.goals || [];
+
+    // Personal mode: only show goals assigned to current user.
+    // Group mode: show all group-scope goals in the Group Goals panel.
+    const isGroupMode = this.scope === 'group';
+    const myName = (this.userName || '').trim().toLowerCase();
+
+    const activeGoals = allGoals.filter(g => !g.completed);
+    const completedGoals = allGoals.filter(g => !!g.completed);
+
+    const groupGoals = isGroupMode ? activeGoals : [];
+    const personalGoals = activeGoals.filter(g => (g.assignee || '').toString().trim().toLowerCase() === myName);
     
     // Render group goals
     const groupContainer = document.getElementById('groupGoals');
     if (groupContainer) {
       if (groupGoals.length === 0) {
-        groupContainer.innerHTML = `<p class="empty-state">No group goals yet. Set a shared goal together!</p>`;
+        groupContainer.innerHTML = isGroupMode
+          ? `<p class="empty-state">No group goals yet. Set a goal for your group!</p>`
+          : `<p class="empty-state">Join or create a group to use Group Goals.</p>`;
       } else {
         groupContainer.innerHTML = groupGoals.map(goal => this.renderGoalCard(goal)).join('');
         this.attachGoalEventListeners(groupContainer);
@@ -748,6 +952,58 @@ class KaizenApp {
       } else {
         personalContainer.innerHTML = personalGoals.map(goal => this.renderGoalCard(goal)).join('');
         this.attachGoalEventListeners(personalContainer);
+      }
+    }
+
+    // Render completed goals history (if the container exists)
+    const completedContainer = document.getElementById('completedGoals');
+    if (completedContainer) {
+      const completedVisible = isGroupMode
+        ? completedGoals
+        : completedGoals.filter(g => (g.assignee || '').toString().trim().toLowerCase() === myName);
+
+      if (completedVisible.length === 0) {
+        completedContainer.innerHTML = `<p class="empty-state">No completed goals yet.</p>`;
+      } else {
+        const sorted = [...completedVisible].sort((a, b) => new Date(b.completedAt || b.updatedAt || b.createdAt) - new Date(a.completedAt || a.updatedAt || a.createdAt));
+        completedContainer.innerHTML = sorted.map(goal => {
+          const categoryKey = (goal.category === 'family') ? 'group' : (goal.category || 'personal');
+          const categoryLabel = (categoryKey || '').toString();
+          return `
+            <div class="goal-card" data-id="${goal.id}">
+              <div class="goal-header">
+                <span class="goal-category ${categoryKey}">${this.getCategoryEmoji(categoryKey)} ${categoryLabel}</span>
+                <span class="goal-assignee">👤 ${goal.assignee}</span>
+              </div>
+              <h3 class="goal-title">${goal.title}</h3>
+              <p class="goal-description">${goal.description || ''}</p>
+              <div class="goal-actions">
+                <button class="btn btn-small" data-reopen-goal="${goal.id}">Reopen</button>
+                <button class="btn btn-small" data-edit-goal="${goal.id}">Edit</button>
+                <button class="btn btn-small btn-danger" data-delete-goal="${goal.id}">🗑️</button>
+              </div>
+              ${(goal.completedAt || goal.createdAt) ? `<div class="goal-due">Completed: ${new Date(goal.completedAt || goal.createdAt).toLocaleDateString()}</div>` : ''}
+            </div>
+          `;
+        }).join('');
+
+        completedContainer.querySelectorAll('[data-reopen-goal]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            this.reopenGoal(e.target.dataset.reopenGoal);
+          });
+        });
+        completedContainer.querySelectorAll('[data-edit-goal]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            this.beginEditGoal(e.target.dataset.editGoal);
+          });
+        });
+        completedContainer.querySelectorAll('[data-delete-goal]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            if (confirm('Delete this goal?')) {
+              this.deleteGoal(e.target.dataset.deleteGoal);
+            }
+          });
+        });
       }
     }
   }
@@ -771,6 +1027,7 @@ class KaizenApp {
         </div>
         <div class="goal-actions">
           <input type="range" min="0" max="100" value="${goal.progress}" class="progress-slider" data-goal="${goal.id}">
+          <button class="btn btn-small" data-edit-goal="${goal.id}">Edit</button>
           <button class="btn btn-small btn-danger" data-delete-goal="${goal.id}">🗑️</button>
         </div>
         ${goal.dueDate ? `<div class="goal-due">Due: ${new Date(goal.dueDate).toLocaleDateString()}</div>` : ''}
@@ -790,6 +1047,12 @@ class KaizenApp {
         if (confirm('Delete this goal?')) {
           this.deleteGoal(e.target.dataset.deleteGoal);
         }
+      });
+    });
+
+    container.querySelectorAll('[data-edit-goal]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.beginEditGoal(e.target.dataset.editGoal);
       });
     });
   }
@@ -812,12 +1075,13 @@ class KaizenApp {
   // HABITS
   // =====================
 
-  async addHabit(name, frequency, assignee, reminder) {
+  async addHabit(name, frequency, assignee, reminder, description) {
     const habitId = 'habit_' + Date.now();
     const habitData = {
       name,
       frequency,
       assignee,
+      description: (description || '').trim(),
       streak: 0,
       completedDates: [],
       createdBy: this.userName,
@@ -834,6 +1098,46 @@ class KaizenApp {
       habitData
     );
     this.showToast('Habit added! 🌱');
+  }
+
+  async updateHabit(habitId, updates) {
+    await this.helpers.setDoc(
+      this.docInScope('habits', habitId),
+      { ...updates, updatedAt: new Date().toISOString() },
+      { merge: true }
+    );
+
+    this.data.habits = (this.data.habits || []).map(h => {
+      if (h.id !== habitId) return h;
+      return { ...h, ...updates };
+    });
+    this.renderHabits();
+    this.renderDashboard();
+  }
+
+  async setHabitArchived(habitId, archived) {
+    await this.updateHabit(habitId, { archived: !!archived, archivedAt: archived ? new Date().toISOString() : null });
+    this.showToast(archived ? 'Habit archived' : 'Habit restored');
+  }
+
+  beginEditHabit(habitId) {
+    const habit = (this.data.habits || []).find(h => h.id === habitId);
+    if (!habit) return;
+
+    const nameInput = document.getElementById('habitName');
+    const freqInput = document.getElementById('habitFrequency');
+    const assigneeInput = document.getElementById('habitAssignee');
+    const reminderInput = document.getElementById('habitReminder');
+    const descInput = document.getElementById('habitDescription');
+
+    if (nameInput) nameInput.value = habit.name || '';
+    if (freqInput) freqInput.value = habit.frequency || '';
+    if (assigneeInput) assigneeInput.value = habit.assignee || '';
+    if (reminderInput) reminderInput.value = habit.reminder || '';
+    if (descInput) descInput.value = habit.description || '';
+
+    this.editingHabitId = habitId;
+    this.openModal('addHabitModal');
   }
 
   async toggleHabitToday(habitId) {
@@ -896,8 +1200,12 @@ class KaizenApp {
   renderHabits() {
     const container = document.getElementById('habitsList');
     if (!container) return;
-    
-    if (this.data.habits.length === 0) {
+
+    const allHabits = this.data.habits || [];
+    const activeHabits = allHabits.filter(h => !h.archived);
+    const archivedHabits = allHabits.filter(h => !!h.archived);
+
+    if (activeHabits.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">🌱</div>
@@ -905,45 +1213,103 @@ class KaizenApp {
           <p>Start building positive habits!</p>
         </div>
       `;
-      return;
-    }
-    
-    const today = new Date().toISOString().split('T')[0];
-    
-    container.innerHTML = this.data.habits.map(habit => {
-      const isCompletedToday = (habit.completedDates || []).includes(today);
-      return `
-        <div class="habit-card ${isCompletedToday ? 'completed' : ''}" data-id="${habit.id}">
-          <button class="habit-check ${isCompletedToday ? 'checked' : ''}" data-toggle-habit="${habit.id}">
-            ${isCompletedToday ? '✓' : ''}
-          </button>
-          <div class="habit-info">
-            <h3 class="habit-name">${habit.name}</h3>
-            <div class="habit-meta">
-              <span>👤 ${habit.assignee}</span>
-              <span>📅 ${habit.frequency}</span>
-              <span class="habit-streak">🔥 ${habit.streak || 0} day streak</span>
+    } else {
+      const today = new Date().toISOString().split('T')[0];
+
+      container.innerHTML = activeHabits.map(habit => {
+        const isCompletedToday = (habit.completedDates || []).includes(today);
+        return `
+          <div class="habit-card ${isCompletedToday ? 'completed' : ''}" data-id="${habit.id}">
+            <button class="habit-check ${isCompletedToday ? 'checked' : ''}" data-toggle-habit="${habit.id}">
+              ${isCompletedToday ? '✓' : ''}
+            </button>
+            <div class="habit-info">
+              <h3 class="habit-name">${habit.name}</h3>
+              ${habit.description ? `<p class="habit-description">${habit.description}</p>` : ''}
+              <div class="habit-meta">
+                <span>👤 ${habit.assignee}</span>
+                <span>📅 ${habit.frequency}</span>
+                <span class="habit-streak">🔥 ${habit.streak || 0} day streak</span>
+              </div>
             </div>
+            <button class="btn btn-small" data-edit-habit="${habit.id}">Edit</button>
+            <button class="btn btn-small" data-archive-habit="${habit.id}">Archive</button>
+            <button class="btn btn-small btn-danger" data-delete-habit="${habit.id}">🗑️</button>
           </div>
-          <button class="btn btn-small btn-danger" data-delete-habit="${habit.id}">🗑️</button>
-        </div>
-      `;
-    }).join('');
-    
-    // Add event listeners
-    container.querySelectorAll('[data-toggle-habit]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        this.toggleHabitToday(e.target.dataset.toggleHabit);
+        `;
+      }).join('');
+
+      container.querySelectorAll('[data-toggle-habit]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          this.toggleHabitToday(e.target.dataset.toggleHabit);
+        });
       });
-    });
-    
-    container.querySelectorAll('[data-delete-habit]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        if (confirm('Delete this habit?')) {
-          this.deleteHabit(e.target.dataset.deleteHabit);
-        }
+
+      container.querySelectorAll('[data-edit-habit]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          this.beginEditHabit(e.target.dataset.editHabit);
+        });
       });
-    });
+
+      container.querySelectorAll('[data-archive-habit]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          this.setHabitArchived(e.target.dataset.archiveHabit, true);
+        });
+      });
+
+      container.querySelectorAll('[data-delete-habit]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          if (confirm('Delete this habit?')) {
+            this.deleteHabit(e.target.dataset.deleteHabit);
+          }
+        });
+      });
+    }
+
+    // Render archived habits (if container exists)
+    const archivedContainer = document.getElementById('archivedHabitsList');
+    if (archivedContainer) {
+      if (archivedHabits.length === 0) {
+        archivedContainer.innerHTML = `<p class="empty-state">No archived habits.</p>`;
+      } else {
+        const sorted = [...archivedHabits].sort((a, b) => new Date(b.archivedAt || b.updatedAt || b.createdAt) - new Date(a.archivedAt || a.updatedAt || a.createdAt));
+        archivedContainer.innerHTML = sorted.map(habit => {
+          return `
+            <div class="habit-card" data-id="${habit.id}">
+              <div class="habit-info">
+                <h3 class="habit-name">${habit.name}</h3>
+                ${habit.description ? `<p class="habit-description">${habit.description}</p>` : ''}
+                <div class="habit-meta">
+                  <span>👤 ${habit.assignee}</span>
+                  <span>📅 ${habit.frequency}</span>
+                </div>
+              </div>
+              <button class="btn btn-small" data-restore-habit="${habit.id}">Restore</button>
+              <button class="btn btn-small" data-edit-habit="${habit.id}">Edit</button>
+              <button class="btn btn-small btn-danger" data-delete-habit="${habit.id}">🗑️</button>
+            </div>
+          `;
+        }).join('');
+
+        archivedContainer.querySelectorAll('[data-restore-habit]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            this.setHabitArchived(e.target.dataset.restoreHabit, false);
+          });
+        });
+        archivedContainer.querySelectorAll('[data-edit-habit]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            this.beginEditHabit(e.target.dataset.editHabit);
+          });
+        });
+        archivedContainer.querySelectorAll('[data-delete-habit]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            if (confirm('Delete this habit?')) {
+              this.deleteHabit(e.target.dataset.deleteHabit);
+            }
+          });
+        });
+      }
+    }
     
     // Render weekly habit grid
     this.renderWeeklyHabitGrid();
@@ -951,7 +1317,8 @@ class KaizenApp {
 
   renderWeeklyHabitGrid() {
     const container = document.getElementById('weeklyHabitGrid');
-    if (!container || this.data.habits.length === 0) {
+    const activeHabits = (this.data.habits || []).filter(h => !h.archived);
+    if (!container || activeHabits.length === 0) {
       if (container) container.innerHTML = '<p class="empty-state">Add habits to see your weekly progress!</p>';
       return;
     }
@@ -974,7 +1341,7 @@ class KaizenApp {
           <div class="habit-grid-name">Habit</div>
           ${days.map(d => `<div class="habit-grid-day ${d.isToday ? 'today' : ''}">${d.label}</div>`).join('')}
         </div>
-        ${this.data.habits.map(habit => `
+        ${activeHabits.map(habit => `
           <div class="habit-grid-row">
             <div class="habit-grid-name">${habit.name}</div>
             ${days.map(d => {
@@ -1304,7 +1671,7 @@ class KaizenApp {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
 
-    const allowedPages = new Set(['dashboard', 'goals', 'habits', 'journal', 'group', 'learn', 'donate', 'settings']);
+    const allowedPages = new Set(['dashboard', 'goals', 'habits', 'journal', 'group', 'learn', 'donate', 'settings', 'help']);
 
     const showPage = (targetPage) => {
       const pageKey = allowedPages.has(targetPage) ? targetPage : 'dashboard';
@@ -1368,6 +1735,30 @@ class KaizenApp {
       });
     }
 
+    // Settings: account switching
+    const knownUsersSelect = document.getElementById('knownUsersSelect');
+    const loginNameInput = document.getElementById('loginNameInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    if (knownUsersSelect) {
+      knownUsersSelect.addEventListener('change', () => {
+        const val = (knownUsersSelect.value || '').trim();
+        if (loginNameInput && val) loginNameInput.value = val;
+      });
+    }
+    if (loginBtn) {
+      loginBtn.addEventListener('click', () => {
+        const name = loginNameInput ? loginNameInput.value : (knownUsersSelect ? knownUsersSelect.value : '');
+        this.loginAs(name);
+      });
+    }
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => this.logout());
+    }
+
+    this.refreshAccountUI();
+
     // Add Goal buttons
     const addGroupGoalBtn = document.getElementById('addGroupGoal');
     if (addGroupGoalBtn) addGroupGoalBtn.addEventListener('click', () => this.openGoalModal('group'));
@@ -1376,7 +1767,12 @@ class KaizenApp {
     
     // Add Habit button
     const addHabitBtn = document.getElementById('addHabit');
-    if (addHabitBtn) addHabitBtn.addEventListener('click', () => this.openModal('addHabitModal'));
+      if (addHabitBtn) addHabitBtn.addEventListener('click', () => {
+        this.editingHabitId = null;
+        const form = document.getElementById('addHabitForm');
+        if (form && typeof form.reset === 'function') form.reset();
+        this.openModal('addHabitModal');
+      });
     
     // Quick Actions
     document.querySelectorAll('[data-action]').forEach(btn => {
@@ -1453,11 +1849,39 @@ class KaizenApp {
           }
 
           const description = readFormValue(addGoalForm, 'goalDescription');
-          const assignee = (readFormValue(addGoalForm, 'goalAssignee') || this.userName || '').trim();
+          let assignee = (readFormValue(addGoalForm, 'goalAssignee') || this.userName || '').trim();
           const dueDate = readFormValue(addGoalForm, 'goalDueDate');
           const category = readFormValue(addGoalForm, 'goalCategory');
 
-          await this.addGoal(title, description, assignee, dueDate, category);
+          // Enforce assignment rules:
+          // - Personal mode: goals must be for yourself.
+          // - Group mode: goals can be for "Group" or any known group member.
+          if (this.scope !== 'group') {
+            assignee = this.userName;
+          } else {
+            const normalized = (assignee || '').trim();
+            const isGroupAssignee = normalized.toLowerCase() === 'group';
+            if (!isGroupAssignee) {
+              const members = (this.data.groupMembers || [])
+                .map(m => (m && m.name ? String(m.name) : ''))
+                .filter(Boolean);
+              if (members.length > 0) {
+                const ok = members.some(m => m.toLowerCase() === normalized.toLowerCase());
+                if (!ok) {
+                  this.showToast('Assignee must be a group member (or "Group").');
+                  return;
+                }
+              }
+            }
+          }
+
+          if (this.editingGoalId) {
+            const goalId = this.editingGoalId;
+            await this.updateGoal(goalId, { title, description, assignee, dueDate, category });
+            this.editingGoalId = null;
+          } else {
+            await this.addGoal(title, description, assignee, dueDate, category);
+          }
           addGoalForm.reset();
           this.closeModal('addGoalModal');
         } catch (err) {
@@ -1508,13 +1932,28 @@ class KaizenApp {
       }
       const form = e.target;
       const reminderValue = form.habitReminder ? form.habitReminder.value : undefined;
-      await this.addHabit(
-        form.habitName.value,
-        form.habitFrequency.value,
-        form.habitAssignee.value || this.userName,
-        reminderValue
-      );
+      const descriptionValue = form.habitDescription ? form.habitDescription.value : undefined;
+      if (this.editingHabitId) {
+        const habitId = this.editingHabitId;
+        await this.updateHabit(habitId, {
+          name: form.habitName.value,
+          frequency: form.habitFrequency.value,
+          assignee: form.habitAssignee.value || this.userName,
+          reminder: reminderValue || null,
+          description: (descriptionValue || '').trim()
+        });
+        this.showToast('Habit updated');
+      } else {
+        await this.addHabit(
+          form.habitName.value,
+          form.habitFrequency.value,
+          form.habitAssignee.value || this.userName,
+          reminderValue,
+          descriptionValue
+        );
+      }
       form.reset();
+      this.editingHabitId = null;
       this.closeModal('addHabitModal');
     });
     
@@ -1667,6 +2106,10 @@ class KaizenApp {
   }
 
   openGoalModal(type) {
+    this.editingGoalId = null;
+    const form = document.getElementById('addGoalForm');
+    if (form && typeof form.reset === 'function') form.reset();
+
     const assigneeInput = document.getElementById('goalAssignee');
     if (assigneeInput) {
       if (type === 'group') {

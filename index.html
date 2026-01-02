@@ -792,6 +792,38 @@
       });
     })();
   </script>
+  <script>
+    (function () {
+      function showPage(pageKey) {
+        var allowed = { dashboard: true, goals: true, habits: true, journal: true, group: true, learn: true };
+        var key = allowed[pageKey] ? pageKey : 'dashboard';
+
+        var pages = document.querySelectorAll('.page');
+        for (var i = 0; i < pages.length; i++) {
+          var p = pages[i];
+          p.classList.toggle('active', p.id === 'page-' + key);
+        }
+
+        var links = document.querySelectorAll('.nav-link');
+        for (var j = 0; j < links.length; j++) {
+          var link = links[j];
+          link.classList.toggle('active', link.getAttribute('data-page') === key);
+        }
+      }
+
+      function route() {
+        var hash = (window.location.hash || '').replace('#', '').trim();
+        if (!hash) {
+          window.location.hash = '#dashboard';
+          hash = 'dashboard';
+        }
+        showPage(hash);
+      }
+
+      window.addEventListener('hashchange', route);
+      document.addEventListener('DOMContentLoaded', route);
+    })();
+  </script>
   <script src="/js/app.js" type="module"></script>
 </body>
 </html>
